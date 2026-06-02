@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>CVUsta — Profesyonel CV Oluşturucu</title>
+<meta name="description" id="metaDesc" content="Dakikalar içinde profesyonel, fotoğraflı CV oluştur. 50+ şablon, canlı önizleme ve PDF indirme.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://cvusta.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cvusta.com/">
+<meta property="og:site_name" content="CVUsta">
+<meta property="og:title" id="ogTitle" content="CVUsta — Ücretsiz Online CV Oluşturucu">
+<meta property="og:description" id="ogDesc" content="Dakikalar içinde profesyonel, fotoğraflı CV oluştur.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="CVUsta">
+<meta name="twitter:description" id="twDesc" content="Profesyonel CV oluşturucu.">
+<script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebSite","name":"CVUsta"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#c79a3f; --ink:#15182b; --cream:#f6f2e9; --line:#ece7da;
+    --serif:'Fraunces',Georgia,serif; --sans:'DM Sans',system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream)}
+  button{font-family:var(--sans);cursor:pointer;transition:filter .15s,transform .1s;border:none}
+  button:active{transform:scale(.98)}
+  input,textarea,select{font-family:var(--sans);outline:none}
+  input:focus,textarea:focus,select:focus{border-color:var(--gold)!important}
+  ::selection{background:#c79a3f44}
+  a{color:inherit;text-decoration:none}
+  .gold{background:var(--gold);color:var(--ink);font-weight:700;border-radius:10px;display:inline-flex;align-items:center;gap:8px;padding:12px 22px;font-size:14px}
+  .ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);font-weight:600;border-radius:10px;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;font-size:14px}
+  .inp{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:13.5px;background:#fbfaf6;color:#15182b}
+  textarea.inp{resize:vertical;min-height:60px}
+  .label{font-size:11.5px;font-weight:600;color:#777;display:block;margin-bottom:5px}
+  .hide{display:none!important}
+  .spin{width:44px;height:44px;border:3px solid #eee;border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 18px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px}
+  .a4{width:100%;aspect-ratio:1/1.414;background:#fff;border-radius:6px;overflow:hidden;box-shadow:0 20px 50px rgba(20,20,40,.18)}
+  .cv{width:100%;height:100%;overflow:auto;background:#fff}
+  .thumb{width:150px;cursor:pointer}
+  .thumbBox{width:150px;height:212px;overflow:hidden;border-radius:8px;background:#fff;box-shadow:0 4px 14px rgba(20,20,40,.08)}
+  .thumbInner{width:340px;height:480px;transform:scale(.441);transform-origin:top left;pointer-events:none}
+  .legal h3{font-family:var(--serif);font-size:18px;font-weight:600;margin:24px 0 8px;color:var(--ink)}
+  .legal p{margin-bottom:12px}
+  .legal ul{margin:0 0 12px 20px}
+  .legal li{margin-bottom:6px}
+  .legal .ph{background:#fff6df;border:1px solid #ecd9a0;border-radius:4px;padding:0 5px;font-weight:600;color:#8a6d1f}
+  @media print{ body *{visibility:hidden} #zoomWrap{transform:none!important} #printArea,#printArea *{visibility:visible} #printArea{position:fixed;inset:0;margin:0;box-shadow:none} @page{size:A4;margin:0} }
+  @media(max-width:760px){ .row2{flex-direction:column!important} .hero-art{display:none} .split-art{display:none} .stick{position:static!important} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ====================== DURUM ====================== */
+const S = { view:'landing', user:null, users:{}, cvs:[], active:null, showAll:false, tplFilter:'all', hideAnchor:false, articleId:null, cookieConsent:null, faqOpen:null, guideQuery:'', zoom:1 };
+let authMode='signup';
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => (s==null?'':(''+s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const paidCount = () => S.cvs.filter(c=>c.paid).length;
+const nextPrice = () => paidCount()===0 ? 10 : 50;
+
+/* ====================== ÖRNEK VERİ ====================== */
+const SAMPLE = {
+  photo:"",
+  fullName:"Elif Yıldırım", title:"Kıdemli Ürün Tasarımcısı",
+  email:"elif@ornek.com", phone:"+90 532 000 00 00", location:"İstanbul", website:"elif.design",
+  summary:"Kullanıcı odaklı dijital ürünler tasarlayan, 7 yıl deneyimli tasarımcı. Fikirden lansmana tüm süreçte takımları yönlendirir.",
+  experience:[
+    {role:"Kıdemli Ürün Tasarımcısı",company:"Akva Teknoloji",period:"2021 — Günümüz",desc:"Mobil uygulamayı yeniden tasarlayarak dönüşümü %34 artırdı. 5 kişilik ekibi yönetti."},
+    {role:"UX Tasarımcısı",company:"Mavi Yazılım",period:"2018 — 2021",desc:"Tasarım sistemini sıfırdan kurdu, geliştirme süresini %40 kısalttı."}
+  ],
+  education:[{school:"İTÜ",degree:"Endüstri Ürünleri Tasarımı",period:"2013 — 2017"}],
+  projects:[{name:"Mobil Bankacılık Yeniden Tasarımı",desc:"Sıfırdan tasarım sistemi ve yeni akışlarla uygulama mağazası puanını 4.8'e çıkardı."}],
+  certificates:[{name:"Google UX Design",issuer:"Coursera",year:"2022"},{name:"Tasarım Liderliği",issuer:"IDEO U",year:"2023"}],
+  skills:"Figma, Tasarım Sistemleri, Kullanıcı Araştırması, Prototipleme, HTML/CSS",
+  languages:"Türkçe (Ana dil), İngilizce (İleri)"
+};
+const SAMPLE_MINI = {
+  photo:"",
+  fullName:"Elif Yıldırım", title:"Ürün Tasarımcısı",
+  email:"elif@ornek.com", phone:"+90 532 000 00 00", location:"İstanbul", website:"elif.design",
+  summary:"Kullanıcı odaklı dijital ürünler tasarlayan deneyimli tasarımcı.",
+  experience:[
+    {role:"Kıdemli Tasarımcı",company:"Akva Teknoloji",period:"2021—",desc:"Mobil uygulamayı yeniden tasarladı, dönüşümü %34 artırdı."},
+    {role:"UX Tasarımcısı",company:"Mavi Yazılım",period:"2018—21",desc:"Tasarım sistemini kurdu."}
+  ],
+  education:[{school:"İTÜ",degree:"Endüstri Tasarımı",period:"2013—17"}],
+  skills:"Figma, Araştırma, Prototip, HTML/CSS",
+  languages:"Türkçe, İngilizce"
+};
+const emptyData = () => ({photo:"",fullName:"",title:"",email:"",phone:"",location:"",website:"",summary:"",
+  experience:[{role:"",company:"",period:"",desc:""}], education:[{school:"",degree:"",period:""}], projects:[], certificates:[], skills:"", languages:"", accent:""});
+
+/* ====================== TEMALAR (renk) ======================
+   accent: hem koyu zeminde beyaz yazıyla, hem beyaz zeminde yazı olarak
+   okunacak kadar koyu seçildi. soft: açık tonu (üzerine koyu accent yazı). */
+const THEMES = {
+  lacivert:{accent:'#22416b', soft:'#eef2f8', name:'Lacivert'},
+  bordo:   {accent:'#7e2738', soft:'#f8eef0', name:'Bordo'},
+  zumrut:  {accent:'#1f6f5c', soft:'#eaf5f1', name:'Zümrüt'},
+  antrasit:{accent:'#2c303b', soft:'#eef0f3', name:'Antrasit'},
+  altin:   {accent:'#8f6b1e', soft:'#f7f1e1', name:'Altın'},
+};
+function colors(themeKey){
+  const t = THEMES[themeKey] || THEMES.lacivert;
+  return { accent:t.accent, soft:t.soft, ink:'#1d2230', sub:'#6b6b73', line:'#e7e3d9',
+    onDarkHead:'rgba(255,255,255,.88)', onDark:'rgba(255,255,255,.92)', onDarkSub:'rgba(255,255,255,.72)' };
+}
+
+const LAYOUT_LIST=[['modern','Modern'],['sutun','Sütun'],['baslik','Başlık'],['klasik','Klasik'],['minimal','Minimal'],['zaman','Zaman'],['kompakt','Kompakt'],['zarif','Zarif'],['vurgu','Vurgu'],['profil','Profil']];
+const THEME_LIST=[['lacivert','Lacivert'],['bordo','Bordo'],['zumrut','Zümrüt'],['antrasit','Antrasit'],['altin','Altın']];
+const TEMPLATES=[]; const TEMPLATES_MAP={};
+LAYOUT_LIST.forEach(([lk,ln])=>THEME_LIST.forEach(([tk,tn])=>{const id=lk+'-'+tk;const o={id,layout:lk,theme:tk,name:ln+' '+tn};TEMPLATES.push(o);TEMPLATES_MAP[id]=o;}));
+const DEFAULT_TPL='modern-lacivert';
+
+/* ====================== İÇERİK (Kariyer Rehberi — trafik & AdSense motoru) ====================== */
+const ARTICLES=[
+  {id:'7-bolum', read:'4 dk', title:"CV'nizde Mutlaka Bulunması Gereken 7 Bölüm", excerpt:"İyi bir CV'nin iskeletini oluşturan temel bölümleri ve her birini nasıl güçlendireceğinizi anlatıyoruz.",
+   body:["İşe alım uzmanları bir CV'ye ortalama birkaç saniye bakar. Bu kısa sürede doğru bilgiyi doğru yerde görmek isterler. Bu yüzden her CV'de şu yedi bölüm net biçimde yer almalı: iletişim bilgileri, kısa profil özeti, iş deneyimi, eğitim, yetenekler, diller ve varsa sertifikalar.",
+   "İletişim bilgilerinizi en üste koyun ve güncel tutun. Profil özeti, sizi iki üç cümlede anlatan vitrin niteliğindedir; en çarpıcı başarınızı buraya taşıyın. Deneyim bölümünde görev tanımı yerine somut sonuçlara odaklanın: 'raporlama yaptım' yerine 'raporlama süresini yarıya indirdim' gibi.",
+   "Yetenekler bölümünü başvurduğunuz ilana göre özelleştirin. Genel ifadeler yerine ilanda geçen anahtar kelimeleri kullanmak, hem insan okuyucu hem de otomatik tarama sistemleri için fark yaratır."]},
+  {id:'ozet-cumlesi', read:'3 dk', title:"İş Başvurusunda Öne Çıkaran Özet Cümlesi Nasıl Yazılır?", excerpt:"CV'nizin en tepesindeki birkaç cümle, görüşmeye çağrılmanızı belirleyebilir. İşte etkili bir özetin formülü.",
+   body:["Profil özeti, kim olduğunuzu, ne yaptığınızı ve karşı tarafa ne katacağınızı anlatan kısa bir paragraftır. İdeal uzunluğu iki ile dört cümledir. Amaç merak uyandırmak, tüm hikâyeyi anlatmak değil.",
+   "İyi bir özet üç parçadan oluşur: ünvanınız ve deneyim süreniz, en güçlü uzmanlık alanınız ve ölçülebilir bir başarı. Örneğin: 'Yedi yıllık deneyime sahip ürün tasarımcısı. Mobil deneyim optimizasyonunda uzman; son projesinde dönüşüm oranını üçte bir oranında artırdı.'",
+   "Her başvuruda bu cümleyi ilana göre hafifçe yeniden yazın. Genel bir özet yerine pozisyona özel bir giriş, sizi diğer adaylardan ayırır."]},
+  {id:'ats', read:'5 dk', title:"ATS Nedir? CV'niz Robot Filtrelerini Nasıl Geçer?", excerpt:"Başvurunuz bir insana ulaşmadan önce çoğu zaman bir yazılımdan geçer. Bu filtreyi geçmenin yolları.",
+   body:["ATS (Aday Takip Sistemi), şirketlerin gelen başvuruları otomatik olarak tarayıp sıralayan yazılımlardır. Büyük şirketlerin çoğu bu sistemleri kullanır. CV'niz okunabilir ve anahtar kelime açısından uyumlu değilse, bir insana hiç ulaşmayabilir.",
+   "Filtreyi geçmek için sade bir düzen kullanın: standart başlıklar, tek sütun ya da basit iki sütun, okunabilir yazı tipleri. Aşırı grafik, tablo içine gömülü metin ve görsel olarak metne dönüştürülmüş başlıklardan kaçının.",
+   "İlandaki kelimeleri CV'nizde de kullanın. 'Proje yönetimi' aranıyorsa, bu ifadeyi birebir geçirin. Dürüst kalmak şartıyla, ilanın diliyle konuşmak görünürlüğünüzü artırır."]},
+  {id:'fotograf', read:'3 dk', title:"Fotoğraflı CV mi, Fotoğrafsız CV mi?", excerpt:"Hangi durumda fotoğraf eklemeli, hangi durumda eklememeli? Ülke ve sektöre göre değişen kuralları açıklıyoruz.",
+   body:["Fotoğraf kullanımı ülkeye ve sektöre göre değişir. Türkiye, Almanya gibi ülkelerde profesyonel bir vesikalık yaygın ve kabul görür. Buna karşılık ABD ve İngiltere'de önyargı riskini azaltmak için çoğu zaman fotoğraf istenmez.",
+   "Fotoğraf ekleyecekseniz profesyonel görünmesine dikkat edin: sade arka plan, iyi ışık, kıyafetin pozisyona uygun olması. Tatil ya da sosyal medya kareleri uygun değildir.",
+   "Yaratıcı sektörlerde ve müşteriyle yüz yüze çalışılan rollerde fotoğraf olumlu etki yaratabilir. Tereddütteyseniz, başvurduğunuz şirketin kültürüne ve ilandaki tona bakın."]},
+  {id:'deneyimsiz', read:'4 dk', title:"Deneyimsizken Güçlü Bir CV Nasıl Hazırlanır?", excerpt:"Henüz iş deneyiminiz yoksa bile dikkat çeken bir CV oluşturmanın yolları var.",
+   body:["İş deneyimi azsa, CV'nizin ağırlığını başka alanlara kaydırın: okul projeleri, gönüllü çalışmalar, stajlar, kişisel projeler ve kazandığınız beceriler. Bunlar da gerçek yetkinliklerdir.",
+   "Öğrendiklerinizi sonuç odaklı anlatın. 'Bir kulüpte etkinlik düzenledim' yerine 'elli kişilik bir etkinliği baştan sona organize ettim' demek çok daha güçlüdür.",
+   "Profil özetinizde hevesinizi ve öğrenme isteğinizi vurgulayın. İşverenler yeni mezunlarda mükemmel deneyim değil, potansiyel ve uyum arar."]},
+  {id:'10-ipucu', read:'5 dk', title:"Mülakata Çağrılma Şansını Artıran 10 İpucu", excerpt:"Küçük dokunuşlarla CV'nizin geri dönüş oranını ciddi biçimde yükseltebilirsiniz.",
+   body:["CV'nizi her başvuruda ilana göre uyarlayın, tek bir CV'yi her yere göndermeyin. İlanın başlığıyla CV'nizdeki ünvanı eşleştirin. Sonuçları rakamlarla destekleyin ve gereksiz bilgileri çıkarın.",
+   "Tek sayfada kalmaya çalışın; çok deneyimli değilseniz iki sayfa gereksizdir. Yazım hatalarını mutlaka kontrol edin, çünkü tek bir hata bile özensiz izlenimi bırakabilir.",
+   "Dosyayı PDF olarak gönderin ki düzen bozulmasın. Dosya adını da profesyonel yapın: 'cv_son_v2' yerine 'Ad-Soyad-CV' gibi. Son olarak, başvurmadan önce CV'nizi bir başkasına okutun."]},
+  {id:'on-yazi', read:'4 dk', title:"Etkili Bir Ön Yazı (Cover Letter) Nasıl Yazılır?", excerpt:"CV'nizi tamamlayan ön yazı, doğru yazıldığında sizi diğer adaylardan ayırır.",
+   body:["Ön yazı, CV'nizdeki bilgileri tekrarlamak için değil, neden tam da bu işe ve bu şirkete uygun olduğunuzu anlatmak için vardır. Üç paragraf yeterlidir: neden başvurduğunuz, ne katacağınız ve bir görüşme talebi.",
+   "İlk cümlede dikkat çekin. 'Bu pozisyona başvuruyorum' yerine, şirketin sizi neden ilgilendirdiğini ya da en güçlü başarınızı öne çıkarın. Şirketi araştırdığınızı gösteren bir detay büyük fark yaratır.",
+   "Kısa tutun; yarım sayfayı geçmeyin. Her başvuru için yeniden yazın, kopyala-yapıştır ön yazılar hemen belli olur ve olumsuz izlenim bırakır."]},
+  {id:'linkedin', read:'4 dk', title:"LinkedIn Profilinizi CV'nizle Uyumlu Hale Getirme", excerpt:"İşverenler başvurunuzdan sonra çoğu zaman LinkedIn'inize bakar. İki profil tutarlı olmalı.",
+   body:["İşe alım uzmanlarının büyük kısmı, CV'nizi gördükten sonra adınızı LinkedIn'de arar. Profilinizdeki ünvanlar, tarihler ve şirketler CV'nizle çelişiyorsa bu güven kaybına yol açar. İkisini düzenli olarak eşitleyin.",
+   "Profil başlığınızı yalnızca ünvanla sınırlamayın; ne yaptığınızı ve uzmanlığınızı özetleyen bir cümle kullanın. 'Hakkında' bölümünü CV özetinizin biraz daha kişisel bir versiyonu olarak yazın.",
+   "İyi bir profil fotoğrafı ve özelleştirilmiş bir URL profesyonellik katar. Bağlantılarınızdan ve eski yöneticilerinizden gelen tavsiyeler de güçlü sosyal kanıttır."]},
+  {id:'beceriler', read:'4 dk', title:"CV'de Hangi Beceriler Yazılmalı? Teknik ve Kişisel Beceriler", excerpt:"Beceriler bölümü, doğru kurgulandığında hem insan okuyucu hem de filtre sistemleri için etkilidir.",
+   body:["Beceriler iki gruba ayrılır: teknik (sert) beceriler ölçülebilir yetkinliklerdir; yazılım dilleri, programlar, sertifikalar gibi. Kişisel (yumuşak) beceriler ise iletişim, takım çalışması, problem çözme gibi davranışsal yetkinliklerdir.",
+   "Yalnızca kişisel beceri listelemek zayıf kalır çünkü herkes 'takım oyuncusu' yazar. Bunları somut örneklerle deneyim bölümünde kanıtlayın. Teknik becerileri ise net ve ilana uygun biçimde listeleyin.",
+   "Sahip olmadığınız beceriyi yazmayın; mülakatta kolayca açığa çıkar. Bunun yerine öğrenmekte olduğunuz becerileri 'temel seviye' gibi dürüst ifadelerle belirtebilirsiniz."]},
+  {id:'star', read:'5 dk', title:"Deneyimi Sonuç Odaklı Yazmanın Formülü: STAR Yöntemi", excerpt:"Görev tanımı yazmak yerine başarılarınızı anlatın. STAR yöntemi bunu kolaylaştırır.",
+   body:["STAR; Durum (Situation), Görev (Task), Eylem (Action) ve Sonuç (Result) kelimelerinin kısaltmasıdır. Her deneyim maddesini bu yapıyla düşünmek, sıradan görev tanımlarını etkileyici başarı cümlelerine dönüştürür.",
+   "Örneğin 'müşteri hizmetlerinde çalıştım' yerine: 'artan şikayetleri azaltmak için (durum/görev) yeni bir yanıt akışı kurdum (eylem) ve çözüm süresini yüzde kırk kısalttım (sonuç).' Bu cümle çok daha güçlüdür.",
+   "Mümkün olduğunda rakam kullanın: yüzde, tutar, süre, kişi sayısı. Sayılar başarınızı somutlaştırır ve okuyanın gözünde kalır."]},
+  {id:'hatalar', read:'4 dk', title:"CV'de Yapılan En Yaygın 12 Hata", excerpt:"Çoğu başvuru, küçük ama tekrarlayan hatalar yüzünden elenir. İşte kaçınmanız gerekenler.",
+   body:["En sık görülen hatalar; yazım yanlışları, herkese aynı CV'yi göndermek, sonuç yerine görev listelemek, gereğinden uzun metinler ve okunması zor tasarımlardır. Bunların her biri kolayca düzeltilebilir.",
+   "Diğer yaygın hatalar arasında güncel olmayan iletişim bilgileri, profesyonel olmayan e-posta adresleri, anlamsız klişeler ve ilanla alakasız deneyimlere fazla yer vermek bulunur.",
+   "Son olarak; fotoğrafın uygunsuz olması, dosyanın Word yerine bozulabilen formatta gönderilmesi ve yalan bilgi eklemek ciddi hatalardır. CV'nizi göndermeden önce bir kontrol listesinden geçirin."]},
+  {id:'kariyer-boslugu', read:'4 dk', title:"Kariyer Boşluklarını (Gap) CV'de Nasıl Açıklarsınız?", excerpt:"İş hayatındaki aralar normaldir. Önemli olan bunları doğru çerçevede sunmaktır.",
+   body:["Kariyer boşlukları; eğitim, sağlık, ailevi nedenler ya da iş arama süreci yüzünden olabilir. Bunları gizlemeye çalışmak yerine kısa ve dürüst bir açıklama eklemek daha güçlü bir izlenim bırakır.",
+   "Boşluk döneminde bir şey öğrendiyseniz, gönüllü çalıştıysanız veya bir sertifika aldıysanız bunu mutlaka belirtin. Bu, sürekli gelişime açık olduğunuzu gösterir.",
+   "CV'de tarihleri yıl bazında vermek, kısa boşlukların görünürlüğünü azaltır. Detayları mülakatta sakin ve net biçimde anlatmaya hazır olun."]},
+  {id:'sektor-degisimi', read:'5 dk', title:"Sektör Değiştirirken CV Nasıl Hazırlanır?", excerpt:"Farklı bir alana geçiyorsanız, aktarılabilir becerilerinizi öne çıkarmalısınız.",
+   body:["Sektör değiştirenlerin en büyük avantajı aktarılabilir becerilerdir: proje yönetimi, iletişim, analiz, liderlik gibi yetkinlikler hemen her alanda değerlidir. CV'nizi bu becerilerin etrafında kurgulayın.",
+   "Kronolojik düzen yerine, becerilere odaklanan bir yapı tercih edebilirsiniz. Profil özetinizde neden geçiş yaptığınızı ve yeni alana ne getireceğinizi net biçimde anlatın.",
+   "Yeni sektörün dilini öğrenin ve CV'nizde o terimleri kullanın. Küçük bir kurs ya da sertifika, kararlılığınızı gösteren güçlü bir sinyaldir."]},
+  {id:'yeni-mezun', read:'4 dk', title:"Yeni Mezunlar İçin CV Rehberi", excerpt:"Deneyim azken bile dikkat çeken bir CV hazırlamak mümkün.",
+   body:["Yeni mezunsanız CV'nizin merkezine eğitiminizi, projelerinizi ve stajlarınızı koyun. Bitirme projeleri, kulüp sorumlulukları ve gönüllü çalışmalar gerçek yetkinliklerdir; bunları somut sonuçlarla anlatın.",
+   "Not ortalamanız yüksekse ekleyin, değilse zorunlu değildir. Bunun yerine katıldığınız eğitimleri, kazandığınız becerileri ve teknik araçları öne çıkarın.",
+   "Tek sayfa yeterlidir. Profil özetinizde öğrenme isteğinizi ve hangi alanda ilerlemek istediğinizi belirtin; işverenler yeni mezunda deneyim değil potansiyel arar."]},
+  {id:'yonetici-cv', read:'4 dk', title:"Yönetici ve Üst Düzey CV'si Nelerle Farklılaşır?", excerpt:"Liderlik pozisyonları için CV, görevlerden çok etki ve sonuçlara odaklanmalıdır.",
+   body:["Üst düzey CV'lerde işverenler operasyonel görevleri değil, stratejik etkiyi arar: büyüme, kârlılık, ekip ölçeği, dönüşüm projeleri. Başarılarınızı iş sonuçlarıyla ilişkilendirin.",
+   "Liderlik kapsamınızı netleştirin: kaç kişilik ekip, hangi bütçe, hangi bölgeler. Yönettiğiniz değişimleri ve bunların ölçülebilir sonuçlarını vurgulayın.",
+   "Bu seviyede iki sayfa kabul edilebilir. Güçlü, net bir profesyonel özet ve sonuç odaklı birkaç vurucu madde, uzun açıklamalardan daha etkilidir."]},
+  {id:'cv-uzunlugu', read:'3 dk', title:"CV Uzunluğu: Tek Sayfa mı, İki Sayfa mı?", excerpt:"Doğru uzunluk deneyiminize bağlıdır. İşte basit bir kural.",
+   body:["Genel kural şudur: on yıldan az deneyiminiz varsa tek sayfa idealdir. Daha fazla deneyiminiz ya da yönetici rolünüz varsa iki sayfa kabul edilebilir, ancak nadiren daha fazlası gerekir.",
+   "Sayfayı doldurmak için gereksiz bilgi eklemeyin. İşe alım uzmanı sınırlı süre ayırır; en alakalı ve etkileyici bilgileri üst kısma yerleştirin.",
+   "Eski ve alakasız deneyimleri kısaltın veya çıkarın. Her satır, başvurduğunuz pozisyon için değer katmalı."]},
+  {id:'referanslar', read:'3 dk', title:"Referanslar CV'ye Eklenmeli mi?", excerpt:"Referans bilgilerini nereye ve ne zaman koymalısınız?",
+   body:["Çoğu durumda CV'ye referans iletişim bilgilerini doğrudan eklemek gerekmez. 'Talep halinde referans sağlanabilir' ifadesi bile artık çoğu zaman gereksizdir; yeri başka bilgilere ayırın.",
+   "İşveren referans istediğinde, önceden haber verdiğiniz, sizi olumlu anlatacak kişileri paylaşın. Referans kişilerinizi her zaman önceden bilgilendirin.",
+   "Referansları erken paylaşmak, hem onların zamanını gereksiz meşgul eder hem de gizlilik açısından doğru olmayabilir. Süreç ilerleyince paylaşmak daha profesyoneldir."]},
+  {id:'hobiler', read:'3 dk', title:"CV'de Hobiler ve İlgi Alanları Bölümü Gerekli mi?", excerpt:"Doğru seçilmiş ilgi alanları kişiliğinizi yansıtabilir; yanlışları ise yer kaybıdır.",
+   body:["Hobiler bölümü zorunlu değildir, ancak pozisyona değer katıyorsa eklenebilir. Takım sporları takım çalışmasını, bireysel projeler disiplini gösterebilir.",
+   "Genel ve sıradan ifadelerden kaçının. 'Kitap okumak, müzik dinlemek' gibi maddeler ayırt edici değildir. Spesifik ve gerçek ilgi alanları daha akılda kalıcıdır.",
+   "Yer kısıtlıysa bu bölümü çıkarın ve alanı deneyim veya becerilere ayırın. Hobiler, ancak gerçekten bir şey anlatıyorsa değerlidir."]},
+  {id:'anahtar-kelime', read:'4 dk', title:"Anahtar Kelimelerle CV'yi İlana Göre Optimize Etmek", excerpt:"Her ilan kendi diliyle konuşur. CV'nizi o dile uyarlamak görünürlüğü artırır.",
+   body:["İş ilanını dikkatle okuyun ve tekrar eden anahtar kelimeleri belirleyin: aranan beceriler, araçlar, sorumluluklar. Bu kelimeler hem otomatik filtrelerin hem de işe alım uzmanının aradığı sinyallerdir.",
+   "Bu kelimeleri, dürüst kalmak şartıyla CV'nizde de kullanın. İlan 'müşteri ilişkileri yönetimi' diyorsa, siz de aynı ifadeyi geçirin; eş anlamlı varyasyonlar filtreyi şaşırtabilir.",
+   "Her başvuru için CV'nizi hafifçe yeniden düzenleyin. Tek bir genel CV'yi her yere göndermek, kişiselleştirilmiş bir başvurunun gerisinde kalır."]},
+  {id:'freelance-cv', read:'4 dk', title:"Freelance ve Serbest Çalışanlar İçin CV", excerpt:"Proje bazlı çalışıyorsanız CV'nizi farklı kurgulamanız gerekir.",
+   body:["Serbest çalışanlar için tek bir işveren yoktur; bunun yerine projeler ve müşteriler vardır. CV'nizi en etkileyici projeleriniz etrafında, sonuç ve müşteri değeri odağıyla kurun.",
+   "Bir portföy bağlantısı ekleyin; serbest çalışanlar için iş örnekleri sözlerden daha ikna edicidir. Müşteri yorumları veya ölçülebilir sonuçlar güven oluşturur.",
+   "Düzensiz görünmemek için projeleri tematik olarak gruplayabilir, toplam deneyim sürenizi net biçimde belirtebilirsiniz. Hangi tür işleri aldığınızı da açıkça yazın."]},
+  {id:'ingilizce-cv', read:'4 dk', title:"Uluslararası Başvuru: İngilizce CV İpuçları", excerpt:"Yurt dışı veya uluslararası şirket başvurularında dikkat edilmesi gerekenler.",
+   body:["İngilizce CV'de ülkeye göre beklentiler değişir. ABD'de genellikle fotoğraf, doğum tarihi ve medeni durum yazılmaz; Avrupa'nın bazı ülkelerinde ise daha fazla kişisel bilgi kabul görür.",
+   "Çeviriyi profesyonel yapın; otomatik çevirilerdeki hatalar olumsuz izlenim bırakır. Eylem fiilleriyle başlayan, sonuç odaklı maddeler İngilizce CV'lerde özellikle değerlidir.",
+   "Tarih, telefon ve adres formatlarını hedef ülkeye uygun yazın. Dil seviyenizi dürüst ve standart ifadelerle (örneğin Avrupa dil çerçevesi seviyeleriyle) belirtin."]},
+  {id:'mulakat-hazirlik', read:'5 dk', title:"Mülakata Hazırlık: Sık Sorulan Sorular ve Yanıtları", excerpt:"İyi bir hazırlık, mülakat kaygısını güvene çevirir.",
+   body:["Neredeyse her mülakatta karşılaşacağınız sorular vardır: kendinizi tanıtın, güçlü ve zayıf yönleriniz, neden bu şirket, beş yıl sonra kendinizi nerede görüyorsunuz. Bu yanıtları önceden hazırlamak özgüven verir.",
+   "Yanıtlarınızı ezberlemeyin, ana noktaları belirleyin ve örneklerle destekleyin. Zayıf yön sorusunda gerçek ama üzerinde çalıştığınız bir alanı seçin; klişe 'mükemmeliyetçiyim' yanıtından kaçının.",
+   "Şirketi araştırın ve kendi sorularınızı hazırlayın. Görüşme sonunda sorduğunuz iyi sorular, gerçek ilginizi gösterir ve olumlu izlenim bırakır."]},
+  {id:'maas-beklentisi', read:'4 dk', title:"Maaş Beklentisi Nasıl Belirtilir?", excerpt:"Bu hassas konuyu doğru yönetmek, hem işi hem değerinizi korur.",
+   body:["Maaş beklentisini erken aşamada net rakam vermek bazen aleyhinize olabilir. Mümkünse önce sorumlulukları netleştirin; rakam istenirse araştırmaya dayalı bir aralık sunun.",
+   "Sektör ve pozisyon için piyasa araştırması yapın. Deneyiminiz, beceri setiniz ve şehir gibi faktörleri hesaba katarak gerçekçi ama kendinizi değersizleştirmeyen bir aralık belirleyin.",
+   "Rakamı söylerken gerekçesini de kısaca belirtin. Esnek olduğunuzu ama bir temel beklentiniz olduğunu net biçimde ifade etmek profesyonel bir tutumdur."]},
+  {id:'tesekkur-epostasi', read:'3 dk', title:"İş Görüşmesi Sonrası Teşekkür E-postası Nasıl Yazılır?", excerpt:"Görüşmeden sonra atılan kısa bir not, sizi rakiplerinizden ayırabilir.",
+   body:["Görüşmeden sonraki 24 saat içinde kısa bir teşekkür e-postası göndermek, profesyonelliğinizi ve ilginizi gösterir. Çoğu aday bunu yapmadığı için kolayca öne çıkarsınız.",
+   "E-postada görüşme için teşekkür edin, konuşulan bir detaya değinin ve pozisyona olan ilginizi tekrar belirtin. Kısa ve samimi tutun; iki üç cümle yeterlidir.",
+   "Görüşmede eksik bıraktığınızı düşündüğünüz bir noktayı da nazikçe ekleyebilirsiniz. Bu, hem dikkatinizi hem de iletişim becerinizi gösterir."]},
+];
+const ARTICLES_MAP={}; ARTICLES.forEach(a=>ARTICLES_MAP[a.id]=a);
+function articleCard(a){ return `<div class="card" onclick="openArticle('${a.id}')" style="cursor:pointer;overflow:hidden;text-align:left">
+  <div style="height:90px;background:linear-gradient(135deg,#22416b,#15182b);display:flex;align-items:center;justify-content:center;color:#c79a3f;font-family:var(--serif);font-size:30px">✦</div>
+  <div style="padding:16px"><div style="font-size:11px;color:#a99a6e;font-weight:600;margin-bottom:6px">REHBER · ${a.read} okuma</div>
+  <h3 style="font-size:15.5px;font-weight:700;line-height:1.3;color:var(--ink)">${a.title}</h3>
+  <p style="font-size:12.5px;color:#6b6354;margin-top:8px;line-height:1.5">${a.excerpt}</p>
+  <div style="font-size:12.5px;color:#8a6d1f;font-weight:700;margin-top:10px">Oku →</div></div></div>`; }
+
+/* ====================== ORTAK PARÇALAR ====================== */
+const nm=P=>esc(P.d.fullName)||'Ad Soyad';
+const ti=P=>esc(P.d.title)||'Ünvan';
+const sideRule=()=>`<div style="height:1px;background:rgba(255,255,255,.18);margin:16px 0"></div>`;
+const sideHead=(t,C)=>`<div style="font-size:10px;letter-spacing:2px;color:${C.onDarkHead};font-weight:700;margin-bottom:8px">${t}</div>`;
+const bodyHead=(t,C)=>`<div style="font-family:var(--serif);font-size:15px;font-weight:600;color:${C.accent};margin-bottom:8px;border-bottom:2px solid ${C.accent};padding-bottom:3px;display:inline-block">${t}</div>`;
+const bandHead=(t,C)=>`<div style="display:inline-block;background:${C.soft};color:${C.accent};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:10px">${t}</div>`;
+const plainHead=(t,C)=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><span style="width:10px;height:10px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${C.accent}">${t}</span></div>`;
+const miniHead=(t,C)=>`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent};border-bottom:1.5px solid ${C.accent};padding-bottom:2px;margin-bottom:8px">${t}</div>`;
+const classicHead=(t,C)=>`<div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid ${C.line};padding-bottom:3px;margin:14px 0 10px;color:${C.accent}">${t}</div>`;
+const elegHead=(t,C)=>`<div style="text-align:center;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:${C.accent};font-family:var(--sans);font-weight:600;margin:16px 0 12px">${t}</div>`;
+const barHead=(t,C)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="width:18px;height:3px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent}">${t}</span></div>`;
+const minHead2=(t)=>`<div style="font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:#777;font-weight:600;margin:4px 0 11px">${t}</div>`;
+
+/* ---- FOTOĞRAF / AVATAR ---- */
+function initials(name){ name=(name||'').trim(); if(!name) return 'CV'; const p=name.split(/\s+/); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
+function avatar(name,bg,fg){
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='${bg}'/><text x='50%' y='50%' dy='.35em' text-anchor='middle' font-family='DM Sans,sans-serif' font-size='46' font-weight='700' fill='${fg}'>${initials(name)}</text></svg>`;
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+}
+function photoEl(P,C,size,o){ o=o||{};
+  const src = P.d.photo ? P.d.photo : avatar(P.d.fullName, o.darkBg?'#ffffff':C.accent, o.darkBg?C.accent:'#ffffff');
+  const ring = o.ring?`box-shadow:0 0 0 3px ${o.ring};`:'';
+  return `<div style="width:${size}px;height:${size}px;border-radius:${o.square?'12px':'50%'};overflow:hidden;flex:0 0 auto;background:#fff;${ring}"><img src="${src}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`;
+}
+
+/* ---- GOOGLE REKLAM ALANI (boş yer tutucu) ---- */
+function adSlot(w,h,note){
+  return `<div class="ad-slot" data-ad="google-adsense" style="width:100%;max-width:${w}px;height:${h}px;margin:14px auto;background:repeating-linear-gradient(45deg,#f4f0e5,#f4f0e5 10px,#efe9da 10px,#efe9da 20px);border:1.5px dashed #cbbf9f;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a4966a;text-align:center;padding:6px">
+    <div style="font-weight:800;letter-spacing:1.5px;font-size:11px">GOOGLE REKLAM ALANI</div>
+    <div style="font-size:10px;margin-top:3px">${note||(w+'×'+h)} · AdSense kodu buraya gelecek</div>
+  </div>`;
+}
+function adCard(){ /* galeri akışı içinde reklam kartı */
+  return `<div style="width:150px;height:212px;background:repeating-linear-gradient(45deg,#f4f0e5,#f4f0e5 10px,#efe9da 10px,#efe9da 20px);border:1.5px dashed #cbbf9f;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a4966a;text-align:center;padding:8px;font-size:10px"><div style="font-weight:800;letter-spacing:1px;font-size:10.5px">REKLAM</div><div style="margin-top:4px">Google AdSense<br>(in-feed)</div></div>`;
+}
+function anchorAd(){ if(S.hideAnchor || S.cookieConsent===null) return '';
+  return `<div id="anchorAd" style="position:fixed;left:0;right:0;bottom:0;z-index:80;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08);padding:6px 10px;display:flex;align-items:center;justify-content:center;gap:10px">
+    <div style="flex:1;max-width:728px;height:54px;background:repeating-linear-gradient(45deg,#f4f0e5,#f4f0e5 10px,#efe9da 10px,#efe9da 20px);border:1.5px dashed #cbbf9f;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#a4966a;font-size:10.5px;font-weight:700;letter-spacing:1px">GOOGLE REKLAM — Alt Sabit (Anchor) Reklam Alanı</div>
+    <button onclick="closeAnchor()" style="background:none;font-size:16px;color:#999;flex:0 0 auto">✕</button>
+  </div>`;
+}
+function cookieBanner(){ return `<div id="cookieBanner" style="position:fixed;left:0;right:0;bottom:0;z-index:95;background:var(--ink);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center">
+  <div style="font-size:12.5px;color:#d7d5e0;max-width:620px;line-height:1.5">Bu site; deneyimi iyileştirmek ve reklam göstermek için çerez kullanır. Ayrıntılar için <span onclick="openLegal('gizlilik')" style="color:var(--gold);cursor:pointer;text-decoration:underline">Gizlilik &amp; Çerez Politikası</span>.</div>
+  <div style="display:flex;gap:8px">
+    <button onclick="rejectCookies()" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600">Reddet</button>
+    <button onclick="acceptCookies()" class="gold" style="padding:9px 18px;font-size:13px">Kabul Et</button>
+  </div>
+</div>`; }
+const expRowFlat=(e,C)=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between"><b style="font-size:12.5px">${esc(e.role)}${e.company?', '+esc(e.company):''}</b><span style="font-size:10px;color:${C.sub}">${esc(e.period)}</span></div><div style="font-size:11px;color:${C.sub};margin-top:2px;line-height:1.5">${esc(e.desc)}</div></div>`;
+function twoColFlat(P,C){ if(!P.skills.length && !P.has(P.d.languages)) return '';
+  return `<div style="height:12px"></div><div style="display:flex;gap:24px">${P.skills.length?`<div style="flex:1">${miniHead('Yetenekler',C)}<div style="font-size:10.5px;color:${C.sub};line-height:1.6">${P.skills.map(esc).join(', ')}</div></div>`:''}${P.has(P.d.languages)?`<div style="flex:1">${miniHead('Diller',C)}<div style="font-size:10.5px;color:${C.sub}">${esc(P.d.languages)}</div></div>`:''}</div>`; }
+
+function extra(P,C,H){
+  let o='';
+  if(P.projs.length){ o+=H('Projeler')+P.projs.map(p=>`<div style="margin-bottom:8px"><div style="font-weight:700;font-size:12px;color:${C.ink}">${esc(p.name)}</div>${p.desc?`<div style="font-size:11px;color:${C.sub};line-height:1.5">${esc(p.desc)}</div>`:''}</div>`).join(''); }
+  if(P.certs.length){ o+=H('Sertifikalar')+P.certs.map(c=>`<div style="margin-bottom:6px;font-size:11.5px;color:${C.ink}"><b>${esc(c.name)}</b>${c.issuer?` <span style="color:${C.sub}">— ${esc(c.issuer)}</span>`:''}${c.year?` <span style="color:${C.sub}">(${esc(c.year)})</span>`:''}</div>`).join(''); }
+  return o ? `<div style="height:12px"></div>`+o : '';
+}
+function hexLighten(hex,amt){ // amt 0..1 (beyaza yaklaştır)
+  try{ hex=hex.replace('#',''); if(hex.length===3) hex=hex.split('').map(x=>x+x).join('');
+    const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+    const m=v=>Math.round(v+(255-v)*amt); return `rgb(${m(r)},${m(g)},${m(b)})`;
+  }catch(e){ return '#eef0f3'; }
+}
+
+/* ====================== DÜZENLER (10 adet) ====================== */
+const LAYOUTS = {
+  modern:(P,C)=>`<div class="cv" style="display:flex;height:100%;font-family:var(--sans)">
+    <div style="width:36%;background:${C.accent};color:#fff;padding:30px 20px">
+      <div style="text-align:center"><div style="display:flex;justify-content:center;margin-bottom:12px">${photoEl(P,C,84,{darkBg:true,ring:'rgba(255,255,255,.3)'})}</div>
+      <div style="font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.12">${nm(P)}</div>
+      <div style="font-size:11px;color:${C.onDarkSub};margin-top:4px;font-weight:600">${ti(P)}</div></div>
+      ${sideRule()}${sideHead('İLETİŞİM',C)}<div style="font-size:11px;color:${C.onDark};line-height:1.9">${P.cont.map(c=>`<div>${esc(c)}</div>`).join('')}</div>
+      ${P.skills.length?sideRule()+sideHead('YETENEKLER',C)+`<div style="display:flex;flex-wrap:wrap;gap:5px">${P.skills.map(s=>`<span style="font-size:9.5px;background:rgba(255,255,255,.16);color:#fff;padding:3px 8px;border-radius:20px">${esc(s)}</span>`).join('')}</div>`:''}
+      ${P.has(P.d.languages)?sideRule()+sideHead('DİLLER',C)+`<div style="font-size:11px;color:${C.onDark};line-height:1.7">${esc(P.d.languages)}</div>`:''}
+    </div>
+    <div style="width:64%;padding:32px 24px;color:${C.ink}">
+      ${P.has(P.d.summary)?bodyHead('Profil',C)+`<div style="font-size:11.5px;color:${C.sub};margin-bottom:18px;line-height:1.6">${esc(P.d.summary)}</div>`:''}
+      ${bodyHead('Deneyim',C)}${P.exps.map(e=>`<div style="margin-bottom:12px;padding-left:13px;position:relative"><span style="position:absolute;left:0;top:5px;width:7px;height:7px;border-radius:4px;background:${C.accent}"></span><div style="font-weight:700;font-size:12.5px">${esc(e.role)}</div><div style="font-size:10.5px;color:${C.accent};font-weight:600">${esc(e.company)}${e.period?' · '+esc(e.period):''}</div><div style="font-size:11px;color:${C.sub};margin-top:2px;line-height:1.5">${esc(e.desc)}</div></div>`).join('')}
+      <div style="height:12px"></div>${bodyHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:9px;padding-left:13px"><div style="font-weight:700;font-size:12px">${esc(e.school)}</div><div style="font-size:10.5px;color:${C.sub}">${esc(e.degree)}${e.period?' · '+esc(e.period):''}</div></div>`).join('')}${extra(P,C,(t)=>bodyHead(t,C))}
+    </div></div>`,
+
+  sutun:(P,C)=>`<div class="cv" style="display:flex;height:100%;font-family:var(--sans)">
+    <div style="width:64%;padding:32px 24px;color:${C.ink}">
+      <div style="font-family:var(--serif);font-size:25px;font-weight:600">${nm(P)}</div>
+      <div style="font-size:12px;color:${C.accent};font-weight:600;margin:2px 0 16px">${ti(P)}</div>
+      ${P.has(P.d.summary)?`<div style="font-size:11.5px;color:${C.sub};margin-bottom:16px;line-height:1.6">${esc(P.d.summary)}</div>`:''}
+      ${bodyHead('Deneyim',C)}${P.exps.map(e=>`<div style="margin-bottom:12px"><div style="font-weight:700;font-size:12.5px">${esc(e.role)}</div><div style="font-size:10.5px;color:${C.accent};font-weight:600">${esc(e.company)}${e.period?' · '+esc(e.period):''}</div><div style="font-size:11px;color:${C.sub};margin-top:2px;line-height:1.5">${esc(e.desc)}</div></div>`).join('')}
+      <div style="height:10px"></div>${bodyHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:9px"><div style="font-weight:700;font-size:12px">${esc(e.school)}</div><div style="font-size:10.5px;color:${C.sub}">${esc(e.degree)}${e.period?' · '+esc(e.period):''}</div></div>`).join('')}${extra(P,C,(t)=>bodyHead(t,C))}
+    </div>
+    <div style="width:36%;background:${C.accent};color:#fff;padding:30px 20px">
+      <div style="display:flex;justify-content:center;margin-bottom:14px">${photoEl(P,C,84,{darkBg:true,ring:'rgba(255,255,255,.3)'})}</div>
+      ${sideHead('İLETİŞİM',C)}<div style="font-size:11px;color:${C.onDark};line-height:1.9">${P.cont.map(c=>`<div>${esc(c)}</div>`).join('')}</div>
+      ${P.skills.length?sideRule()+sideHead('YETENEKLER',C)+`<div style="display:flex;flex-wrap:wrap;gap:5px">${P.skills.map(s=>`<span style="font-size:9.5px;background:rgba(255,255,255,.16);color:#fff;padding:3px 8px;border-radius:20px">${esc(s)}</span>`).join('')}</div>`:''}
+      ${P.has(P.d.languages)?sideRule()+sideHead('DİLLER',C)+`<div style="font-size:11px;color:${C.onDark};line-height:1.7">${esc(P.d.languages)}</div>`:''}
+    </div></div>`,
+
+  baslik:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:${C.ink}">
+    <div style="background:${C.accent};color:#fff;padding:26px 34px;display:flex;align-items:center;gap:18px">
+      ${photoEl(P,C,76,{darkBg:true,ring:'rgba(255,255,255,.35)'})}
+      <div><div style="font-family:var(--serif);font-size:27px;font-weight:600">${nm(P)}</div>
+      <div style="font-size:12px;color:${C.onDarkSub};letter-spacing:2px;text-transform:uppercase;margin-top:4px">${ti(P)}</div>
+      <div style="font-size:10.5px;color:${C.onDark};margin-top:8px">${P.cont.map(esc).join('  ·  ')}</div></div>
+    </div>
+    <div style="padding:26px 34px">
+      ${P.has(P.d.summary)?`<div style="font-size:12px;color:${C.sub};margin-bottom:18px;line-height:1.6">${esc(P.d.summary)}</div>`:''}
+      ${bandHead('Deneyim',C)}${P.exps.map(e=>expRowFlat(e,C)).join('')}
+      <div style="height:12px"></div>${bandHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:8px;display:flex;justify-content:space-between"><span style="font-size:12px"><b>${esc(e.school)}</b> — ${esc(e.degree)}</span><span style="font-size:10px;color:${C.sub}">${esc(e.period)}</span></div>`).join('')}${extra(P,C,(t)=>bandHead(t,C))}
+      ${twoColFlat(P,C)}
+    </div></div>`,
+
+  klasik:(P,C)=>`<div class="cv" style="font-family:var(--serif);color:${C.ink};padding:32px 38px;line-height:1.5">
+    <div style="text-align:center;border-bottom:2px solid ${C.accent};padding-bottom:12px;margin-bottom:16px">
+      <div style="font-size:26px;font-weight:600">${nm(P)}</div>
+      <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-top:5px;color:${C.accent}">${ti(P)}</div>
+      <div style="font-size:10.5px;margin-top:8px;color:${C.sub};font-family:var(--sans)">${P.cont.map(esc).join('  •  ')}</div>
+    </div>
+    ${P.has(P.d.summary)?`<div style="font-size:11.5px;font-style:italic;text-align:center;margin-bottom:16px;font-family:var(--sans);color:${C.sub}">${esc(P.d.summary)}</div>`:''}
+    ${classicHead('Deneyim',C)}${P.exps.map(e=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between"><b style="font-size:12.5px">${esc(e.role)}${e.company?', '+esc(e.company):''}</b><span style="font-size:10px;color:${C.sub};font-family:var(--sans)">${esc(e.period)}</span></div><div style="font-size:11px;color:${C.sub};font-family:var(--sans)">${esc(e.desc)}</div></div>`).join('')}
+    ${classicHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:7px;display:flex;justify-content:space-between"><span style="font-size:12px"><b>${esc(e.school)}</b> — ${esc(e.degree)}</span><span style="font-size:10px;color:${C.sub};font-family:var(--sans)">${esc(e.period)}</span></div>`).join('')}${extra(P,C,(t)=>classicHead(t,C))}
+    ${twoColFlat(P,C)}</div>`,
+
+  minimal:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:#1a1a1a;padding:36px 40px;line-height:1.55">
+    <div style="font-size:30px;font-weight:700;letter-spacing:-1px">${nm(P)}</div>
+    <div style="font-size:13px;color:${C.accent};font-weight:600;margin:2px 0 12px">${ti(P)}</div>
+    <div style="font-size:11px;color:${C.sub};margin-bottom:22px;display:flex;flex-wrap:wrap;gap:4px 14px">${P.cont.map(c=>`<span>${esc(c)}</span>`).join('')}</div>
+    ${P.has(P.d.summary)?`<div style="font-size:12.5px;color:#333;margin-bottom:22px">${esc(P.d.summary)}</div>`:''}
+    ${minHead2('Deneyim')}${P.exps.map(e=>`<div style="margin-bottom:13px"><div style="font-weight:600;font-size:13.5px">${esc(e.role)}</div><div style="font-size:11.5px;color:${C.sub};margin-bottom:2px">${esc(e.company)}${e.period?' · '+esc(e.period):''}</div><div style="font-size:12px;color:#444">${esc(e.desc)}</div></div>`).join('')}
+    ${minHead2('Eğitim')}${P.edus.map(e=>`<div style="margin-bottom:9px"><div style="font-weight:600;font-size:13px">${esc(e.school)}</div><div style="font-size:11.5px;color:${C.sub}">${esc(e.degree)}${e.period?' · '+esc(e.period):''}</div></div>`).join('')}
+    ${P.skills.length?minHead2('Yetenekler')+`<div style="font-size:12px;color:#444;margin-bottom:14px">${P.skills.map(esc).join(', ')}</div>`:''}
+    ${P.has(P.d.languages)?minHead2('Diller')+`<div style="font-size:12px;color:#444">${esc(P.d.languages)}</div>`:''}${extra(P,C,(t)=>minHead2(t))}</div>`,
+
+  zaman:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:${C.ink};padding:32px 34px">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">${photoEl(P,C,64)}<div>
+    <div style="font-family:var(--serif);font-size:25px;font-weight:600">${nm(P)}</div>
+    <div style="font-size:12px;color:${C.accent};font-weight:600;margin-top:2px">${ti(P)}</div>
+    <div style="font-size:10.5px;color:${C.sub};margin-top:4px">${P.cont.map(esc).join('  ·  ')}</div></div></div>
+    ${P.has(P.d.summary)?`<div style="font-size:12px;color:${C.sub};margin-bottom:18px;line-height:1.6">${esc(P.d.summary)}</div>`:''}
+    ${plainHead('Deneyim',C)}
+    <div style="border-left:2px solid ${C.accent};margin-left:5px;padding-left:18px">
+      ${P.exps.map(e=>`<div style="margin-bottom:14px;position:relative"><span style="position:absolute;left:-24px;top:3px;width:9px;height:9px;border-radius:50%;background:${C.accent};box-shadow:0 0 0 3px #fff,0 0 0 4px ${C.accent}"></span><div style="font-weight:700;font-size:12.5px">${esc(e.role)}</div><div style="font-size:10.5px;color:${C.accent};font-weight:600">${esc(e.company)}${e.period?' · '+esc(e.period):''}</div><div style="font-size:11px;color:${C.sub};margin-top:2px;line-height:1.5">${esc(e.desc)}</div></div>`).join('')}
+    </div>
+    <div style="height:8px"></div>${plainHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:8px"><b style="font-size:12px">${esc(e.school)}</b> <span style="font-size:10.5px;color:${C.sub}">— ${esc(e.degree)}${e.period?' · '+esc(e.period):''}</span></div>`).join('')}${extra(P,C,(t)=>plainHead(t,C))}
+    ${twoColFlat(P,C)}</div>`,
+
+  kompakt:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:${C.ink};padding:26px 30px">
+    <div style="display:flex;align-items:center;gap:12px;border-left:5px solid ${C.accent};padding-left:12px;margin-bottom:14px">
+      ${photoEl(P,C,56,{square:true})}
+      <div><div style="font-size:23px;font-weight:800;letter-spacing:-.5px">${nm(P)}</div>
+      <div style="font-size:12px;color:${C.accent};font-weight:600">${ti(P)}</div>
+      <div style="font-size:10px;color:${C.sub};margin-top:4px">${P.cont.map(esc).join(' · ')}</div></div>
+    </div>
+    ${P.has(P.d.summary)?`<div style="font-size:11px;color:${C.sub};margin-bottom:14px;line-height:1.55">${esc(P.d.summary)}</div>`:''}
+    <div style="display:flex;gap:22px">
+      <div style="flex:1.7">${miniHead('Deneyim',C)}${P.exps.map(e=>`<div style="margin-bottom:9px"><div style="font-weight:700;font-size:11.5px">${esc(e.role)} <span style="font-weight:500;color:${C.sub}">· ${esc(e.company)}</span></div><div style="font-size:9.5px;color:${C.sub}">${esc(e.period)}</div><div style="font-size:10.5px;color:${C.sub};line-height:1.45">${esc(e.desc)}</div></div>`).join('')}${extra(P,C,(t)=>miniHead(t,C))}</div>
+      <div style="flex:1">${miniHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:8px"><div style="font-weight:700;font-size:11px">${esc(e.school)}</div><div style="font-size:9.5px;color:${C.sub}">${esc(e.degree)} ${esc(e.period)}</div></div>`).join('')}
+      ${P.skills.length?miniHead('Yetenekler',C)+`<div style="font-size:10px;color:${C.sub};line-height:1.7">${P.skills.map(esc).join(', ')}</div>`:''}
+      ${P.has(P.d.languages)?'<div style="height:8px"></div>'+miniHead('Diller',C)+`<div style="font-size:10px;color:${C.sub}">${esc(P.d.languages)}</div>`:''}</div>
+    </div></div>`,
+
+  zarif:(P,C)=>`<div class="cv" style="font-family:var(--serif);color:${C.ink};padding:36px 40px">
+    <div style="text-align:center"><div style="font-size:30px;font-weight:500;letter-spacing:.5px">${nm(P)}</div>
+    <div style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:${C.accent};margin-top:6px;font-family:var(--sans)">${ti(P)}</div></div>
+    <div style="text-align:center;font-size:10.5px;color:${C.sub};font-family:var(--sans);margin-top:8px">${P.cont.map(esc).join('   •   ')}</div>
+    <div style="height:1px;background:${C.accent};width:56px;margin:14px auto 18px"></div>
+    ${P.has(P.d.summary)?`<div style="font-size:12px;font-style:italic;text-align:center;color:${C.sub};margin-bottom:20px">${esc(P.d.summary)}</div>`:''}
+    ${elegHead('Deneyim',C)}${P.exps.map(e=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:13px">${esc(e.role)}</span><span style="font-size:10px;color:${C.sub};font-family:var(--sans)">${esc(e.period)}</span></div><div style="font-size:11px;color:${C.accent};font-family:var(--sans)">${esc(e.company)}</div><div style="font-size:11px;color:${C.sub};font-family:var(--sans);margin-top:2px;line-height:1.5">${esc(e.desc)}</div></div>`).join('')}
+    ${elegHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:8px;display:flex;justify-content:space-between"><span style="font-size:12px">${esc(e.school)} — <span style="font-family:var(--sans);font-size:11px">${esc(e.degree)}</span></span><span style="font-size:10px;color:${C.sub};font-family:var(--sans)">${esc(e.period)}</span></div>`).join('')}${extra(P,C,(t)=>elegHead(t,C))}
+    ${(P.skills.length||P.has(P.d.languages))?elegHead('Yetenekler & Diller',C)+`<div style="font-size:11px;color:${C.sub};font-family:var(--sans);text-align:center;line-height:1.7">${P.skills.map(esc).join(' · ')}${P.skills.length&&P.has(P.d.languages)?'<br>':''}${esc(P.d.languages)}</div>`:''}</div>`,
+
+  vurgu:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:${C.ink}">
+    <div style="background:${C.accent};color:#fff;padding:30px 32px;display:flex;align-items:center;gap:18px">
+      ${photoEl(P,C,80,{darkBg:true,square:true})}
+      <div><div style="font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1">${nm(P)}</div>
+      <div style="font-size:13px;color:${C.onDark};margin-top:6px;font-weight:500">${ti(P)}</div></div>
+    </div>
+    <div style="background:${C.soft};padding:10px 32px;font-size:10.5px;color:${C.accent};font-weight:600;display:flex;flex-wrap:wrap;gap:4px 16px">${P.cont.map(c=>`<span>${esc(c)}</span>`).join('')}</div>
+    <div style="padding:24px 32px">
+      ${P.has(P.d.summary)?`<div style="font-size:11.5px;color:${C.sub};margin-bottom:16px;line-height:1.6">${esc(P.d.summary)}</div>`:''}
+      ${barHead('Deneyim',C)}${P.exps.map(e=>expRowFlat(e,C)).join('')}
+      <div style="height:12px"></div>${barHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:8px"><b style="font-size:12px">${esc(e.school)}</b> <span style="font-size:10.5px;color:${C.sub}">${esc(e.degree)} · ${esc(e.period)}</span></div>`).join('')}${extra(P,C,(t)=>barHead(t,C))}
+      ${twoColFlat(P,C)}
+    </div></div>`,
+
+  profil:(P,C)=>`<div class="cv" style="font-family:var(--sans);color:${C.ink};padding:30px 32px">
+    <div style="display:flex;gap:18px;align-items:flex-start;margin-bottom:18px">
+      <div style="flex:1.5">
+      <div style="display:flex;align-items:center;gap:14px"><div>${photoEl(P,C,62,{square:true})}</div><div><div style="font-family:var(--serif);font-size:24px;font-weight:600">${nm(P)}</div><div style="font-size:12px;color:${C.accent};font-weight:600;margin-top:3px">${ti(P)}</div></div></div>
+      ${P.has(P.d.summary)?`<div style="font-size:11px;color:${C.sub};margin-top:10px;line-height:1.55">${esc(P.d.summary)}</div>`:''}</div>
+      <div style="flex:1;background:${C.soft};border-radius:8px;padding:12px 14px"><div style="font-size:10px;font-weight:700;color:${C.accent};letter-spacing:1px;margin-bottom:6px">İLETİŞİM</div><div style="font-size:10.5px;color:${C.ink};line-height:1.8">${P.cont.map(c=>`<div>${esc(c)}</div>`).join('')}</div></div>
+    </div>
+    ${miniHead('Deneyim',C)}${P.exps.map(e=>expRowFlat(e,C)).join('')}${extra(P,C,(t)=>miniHead(t,C))}
+    <div style="height:10px"></div>
+    <div style="display:flex;gap:22px">
+      <div style="flex:1">${miniHead('Eğitim',C)}${P.edus.map(e=>`<div style="margin-bottom:7px"><b style="font-size:11.5px">${esc(e.school)}</b><div style="font-size:10px;color:${C.sub}">${esc(e.degree)} · ${esc(e.period)}</div></div>`).join('')}</div>
+      <div style="flex:1">${P.skills.length?miniHead('Yetenekler',C)+`<div style="font-size:10px;color:${C.sub};line-height:1.7">${P.skills.map(esc).join(', ')}</div>`:''}${P.has(P.d.languages)?'<div style="height:8px"></div>'+miniHead('Diller',C)+`<div style="font-size:10px;color:${C.sub}">${esc(P.d.languages)}</div>`:''}</div>
+    </div></div>`,
+};
+
+function renderCV(id, d){
+  const t = TEMPLATES_MAP[id] || TEMPLATES[0];
+  const C = colors(t.theme);
+  if(d.accent){ C.accent=d.accent; C.soft=hexLighten(d.accent,.9); }
+  const has=v=>v&&(''+v).trim();
+  const P={ d, has,
+    cont:[d.email,d.phone,d.location,d.website].filter(has),
+    exps:(d.experience||[]).filter(e=>has(e.role)||has(e.company)),
+    edus:(d.education||[]).filter(e=>has(e.school)),
+    projs:(d.projects||[]).filter(p=>has(p.name)),
+    certs:(d.certificates||[]).filter(c=>has(c.name)),
+    skills:(d.skills||'').split(',').map(s=>s.trim()).filter(Boolean) };
+  return (LAYOUTS[t.layout]||LAYOUTS.modern)(P,C);
+}
+
+const LOGO = (light)=>`<div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ink)">CV</div><span style="font-family:var(--serif);font-size:21px;font-weight:600;color:${light?'#fff':'var(--ink)'};letter-spacing:-.5px">CV<span style="color:var(--gold)">Usta</span></span></div>`;
+
+/* ====================== ŞABLON KÜÇÜK GÖRSELİ ====================== */
+function thumb(t, onclick, selectable){
+  const sel = selectable && S.active && S.active.template===t.id;
+  return `<div class="thumb" onclick="${onclick}">
+    <div class="thumbBox" style="border:${sel?'2.5px solid var(--gold)':'1px solid var(--line)'}"><div class="thumbInner">${renderCV(t.id,SAMPLE_MINI)}</div></div>
+    <div style="font-size:11px;text-align:center;margin-top:6px;color:#5a5346;font-weight:${sel?'700':'500'}">${t.name}</div>
+  </div>`;
+}
+
+/* ====================== GÖRÜNÜMLER ====================== */
+/* ====================== YASAL SAYFALAR ====================== */
+const PH = (t)=>`<span class="ph">[${t}]</span>`;
+const LEGAL = {
+  gizlilik:{ title:"Gizlilik ve Çerez Politikası", updated:"01.06.2026", body:`<div class="legal">
+    <p>Bu politika, CVUsta ("Site") üzerinden toplanan kişisel verilerin nasıl işlendiğini, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve ilgili mevzuat kapsamında açıklamak için hazırlanmıştır.</p>
+    <h3>1. Veri Sorumlusu</h3>
+    <p>Veri sorumlusu ${PH('ŞİRKET / TİCARET UNVANI')}, adres ${PH('AÇIK ADRES')}, e-posta ${PH('E-POSTA')}, telefon ${PH('TELEFON')}.</p>
+    <h3>2. Toplanan Veriler</h3>
+    <ul>
+      <li>Hesap bilgileri: ad-soyad, e-posta adresi.</li>
+      <li>CV içeriğine girdiğiniz bilgiler (deneyim, eğitim, iletişim, fotoğraf vb.).</li>
+      <li>Ödeme sürecinde işlenen bilgiler (ödeme altyapısı sağlayıcısı tarafından işlenir; kart bilgileri sitede saklanmaz).</li>
+      <li>Kullanım ve teknik veriler: IP adresi, tarayıcı türü, ziyaret edilen sayfalar, çerez verileri.</li>
+    </ul>
+    <h3>3. İşleme Amaçları</h3>
+    <p>Verileriniz; hizmetin sunulması, hesap yönetimi, ödeme işlemleri, müşteri desteği, hizmet iyileştirme, yasal yükümlülüklerin yerine getirilmesi ve reklam sunumu amaçlarıyla işlenir.</p>
+    <h3>4. Çerezler</h3>
+    <p>Site; zorunlu çerezler (oturum), analitik çerezler (kullanımı ölçme) ve reklam çerezleri kullanır. Tarayıcı ayarlarınızdan çerezleri yönetebilir veya silebilirsiniz; ancak bazı çerezlerin kapatılması sitenin işleyişini etkileyebilir.</p>
+    <h3>5. Üçüncü Taraf Reklamlar (Google AdSense)</h3>
+    <p>Sitede reklamlar Google AdSense aracılığıyla gösterilebilir. Üçüncü taraf sağlayıcılar (Google dahil), reklam sunumu sonucunda kullanıcıların tarayıcılarına çerez yerleştirebilir veya bunları okuyabilir; web işaretçileri ya da IP adresleri aracılığıyla bilgi toplayabilir. Google ve iş ortakları; çerezleri, kullanıcıların bu siteye ve/veya internetteki diğer sitelere yaptığı önceki ziyaretlere dayalı reklam sunmak için kullanır.</p>
+    <p>Kullanıcılar kişiselleştirilmiş reklamları, Google Reklam Ayarları (<b>google.com/settings/ads</b>) üzerinden devre dışı bırakabilir. Üçüncü taraf sağlayıcıların çerez kullanımını ise <b>aboutads.info</b> adresinden yönetebilirsiniz. Avrupa Ekonomik Alanı'ndaki kullanıcılar için kişiselleştirilmiş reklam öncesinde açık rıza alınır.</p>
+    <h3>6. KVKK Kapsamındaki Haklarınız</h3>
+    <p>KVKK m.11 uyarınca; verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, düzeltilmesini veya silinmesini isteme, işlemeye itiraz etme haklarına sahipsiniz. Taleplerinizi ${PH('E-POSTA')} adresine iletebilirsiniz.</p>
+    <h3>7. Saklama ve Güvenlik</h3>
+    <p>Veriler, işleme amaçları için gerekli süre boyunca ve yasal saklama süreleri kadar tutulur. Verilerin korunması için makul teknik ve idari tedbirler alınır.</p>
+    <h3>8. Değişiklikler</h3>
+    <p>Bu politika zaman zaman güncellenebilir. Güncel sürüm her zaman bu sayfada yayımlanır.</p>
+  </div>`},
+
+  mesafeli:{ title:"Mesafeli Satış Sözleşmesi", updated:"01.06.2026", body:`<div class="legal">
+    <h3>1. Taraflar</h3>
+    <p><b>Satıcı:</b> ${PH('ŞİRKET / TİCARET UNVANI')}, ${PH('ADRES')}, VKN ${PH('VERGİ NO')}, e-posta ${PH('E-POSTA')}, telefon ${PH('TELEFON')}.<br><b>Alıcı:</b> Siteye üye olan ve sipariş veren tüketici.</p>
+    <h3>2. Sözleşmenin Konusu</h3>
+    <p>İşbu sözleşme, Alıcı'nın Site üzerinden elektronik ortamda oluşturduğu CV'nin PDF olarak indirilmesi hizmetinin (dijital ürün) satışına ilişkin tarafların hak ve yükümlülüklerini düzenler.</p>
+    <h3>3. Ürün ve Bedel</h3>
+    <p>Hizmet bedeli, ilk CV için 10 TL, sonraki her CV için 50 TL'dir (tüm vergiler dahildir). Güncel fiyat, ödeme ekranında Alıcı'ya açıkça gösterilir.</p>
+    <h3>4. Ödeme</h3>
+    <p>Ödemeler, anlaşmalı ödeme kuruluşu ${PH('ÖDEME SAĞLAYICI / iyzico')} altyapısı üzerinden güvenli şekilde alınır. Kart bilgileri Satıcı tarafından saklanmaz.</p>
+    <h3>5. Teslimat</h3>
+    <p>Dijital ürün, ödemenin onaylanmasının ardından anında elektronik ortamda teslim edilir; Alıcı CV'sini PDF olarak indirebilir. Ayrı bir fiziki teslimat yapılmaz.</p>
+    <h3>6. Cayma Hakkı</h3>
+    <p>Mesafeli Sözleşmeler Yönetmeliği'nin 15. maddesi uyarınca, elektronik ortamda anında ifa edilen hizmetler ile tüketiciye anında teslim edilen gayri maddi (dijital) ürünlere ilişkin sözleşmelerde cayma hakkı bulunmamaktadır. Alıcı, siparişi onaylayarak hizmetin anında ifa edileceğini ve bu nedenle cayma hakkının kullanılamayacağını kabul eder.</p>
+    <h3>7. Uyuşmazlıkların Çözümü</h3>
+    <p>Uyuşmazlıklarda, Ticaret Bakanlığı'nca belirlenen parasal sınırlar dahilinde Alıcı'nın yerleşim yerindeki Tüketici Hakem Heyetleri veya Tüketici Mahkemeleri yetkilidir.</p>
+  </div>`},
+
+  iade:{ title:"Teslimat ve İade Şartları", updated:"01.06.2026", body:`<div class="legal">
+    <h3>Teslimat</h3>
+    <p>Satışa konu ürün dijitaldir. Ödeme onaylandıktan hemen sonra CV'niz PDF olarak indirilebilir hale gelir; fiziki bir gönderim ve kargo ücreti yoktur.</p>
+    <h3>İade ve Cayma</h3>
+    <p>Dijital ürün, ödeme sonrası anında ifa edildiğinden, Mesafeli Sözleşmeler Yönetmeliği m.15 gereği cayma ve iade hakkı bulunmamaktadır. Sipariş onayı sırasında bu durum Alıcı'ya açıkça bildirilir ve onaylanır.</p>
+    <h3>Teknik Sorunlar</h3>
+    <p>Ödemeniz alındığı halde teknik bir nedenle CV'nizi indiremediyseniz, ${PH('E-POSTA')} adresinden bizimle iletişime geçin. Sorunu en kısa sürede çözüyor, çözülemediği durumda ödemenizi iade ediyoruz.</p>
+  </div>`},
+
+  hakkimizda:{ title:"Hakkımızda", updated:"01.06.2026", body:`<div class="legal">
+    <p>CVUsta, iş arayan herkesin dakikalar içinde profesyonel ve modern bir CV hazırlayabilmesi için kurulmuş bir çevrimiçi CV oluşturma platformudur.</p>
+    <p>50'den fazla şablon, canlı önizleme ve tek tıkla PDF indirme özellikleriyle; tasarım bilgisi gerektirmeden, herkesin işe alımda öne çıkmasını amaçlıyoruz. Ayrıca ücretsiz Kariyer Rehberi bölümümüzle CV yazımı ve iş arama konusunda pratik içerikler sunuyoruz.</p>
+    <p>İşletme bilgileri: ${PH('ŞİRKET / TİCARET UNVANI')} — ${PH('ADRES')}.</p>
+  </div>`},
+
+  iletisim:{ title:"İletişim", updated:"01.06.2026", body:`<div class="legal">
+    <p>Her türlü soru, talep ve geri bildirim için bize ulaşabilirsiniz:</p>
+    <ul>
+      <li><b>Ticaret Unvanı / Ad-Soyad:</b> ${PH('ŞİRKET / TİCARET UNVANI')}</li>
+      <li><b>Adres:</b> ${PH('AÇIK ADRES')}</li>
+      <li><b>E-posta:</b> ${PH('E-POSTA')}</li>
+      <li><b>Telefon:</b> ${PH('TELEFON')}</li>
+      <li><b>KEP Adresi:</b> ${PH('KEP ADRESİ')}</li>
+      <li><b>Vergi Dairesi / No:</b> ${PH('VERGİ DAİRESİ')} / ${PH('VERGİ NO')}</li>
+    </ul>
+    <p>KVKK kapsamındaki başvurularınızı da yukarıdaki e-posta adresine iletebilirsiniz.</p>
+  </div>`},
+};
+
+function siteFooter(){ return `<div style="border-top:1px solid var(--line);padding:26px 6vw;max-width:1300px;margin:0 auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+    <div onclick="go('landing')" style="cursor:pointer">${LOGO()}</div>
+    <div style="display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12.5px;color:#6b6354">
+      <span onclick="openLegal('hakkimizda')" style="cursor:pointer">Hakkımızda</span>
+      <span onclick="openLegal('iletisim')" style="cursor:pointer">İletişim</span>
+      <span onclick="openLegal('gizlilik')" style="cursor:pointer">Gizlilik &amp; Çerez</span>
+      <span onclick="openLegal('mesafeli')" style="cursor:pointer">Mesafeli Satış</span>
+      <span onclick="openLegal('iade')" style="cursor:pointer">Teslimat &amp; İade</span>
+    </div>
+  </div>
+  <div style="font-size:11.5px;color:#a99a6e;margin-top:14px">© 2026 CVUsta — Tüm hakları saklıdır.</div>
+</div>`; }
+
+function legalPage(){ const L=LEGAL[S.legalKey]||LEGAL.gizlilik; return `<div>
+  ${topNav()}
+  <div style="max-width:760px;margin:0 auto;padding:24px 6vw 50px">
+    <span onclick="go('landing')" style="cursor:pointer;font-size:13px;color:#8a6d1f;font-weight:600">← Ana sayfa</span>
+    <h1 style="font-family:var(--serif);font-size:clamp(26px,5vw,36px);font-weight:600;margin:16px 0 6px;letter-spacing:-.5px">${L.title}</h1>
+    <div style="font-size:12px;color:#a99a6e;margin-bottom:20px">Son güncelleme: ${L.updated}</div>
+    <div style="font-size:14.5px;line-height:1.7;color:#33312b">${L.body}</div>
+    <div style="background:#fff6df;border:1px solid #ecd9a0;border-radius:10px;padding:14px 16px;margin-top:24px;font-size:12.5px;color:#8a6d1f">Not: Bu metin bir taslaktır. Köşeli parantezli alanları kendi işletme bilgilerinizle doldurun. Yayına almadan önce bir hukuk danışmanına gözden geçirtmeniz önerilir.</div>
+  </div>
+  ${siteFooter()}
+</div>`; }
+
+function topNav(){ return `<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 6vw;max-width:1300px;margin:0 auto;gap:12px">
+  <div onclick="go('landing')" style="cursor:pointer">${LOGO()}</div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <span onclick="go('guide')" style="cursor:pointer;font-size:14px;font-weight:600;color:#5a5346">Kariyer Rehberi</span>
+    <span onclick="go('auth')" style="cursor:pointer;font-size:14px;font-weight:600;color:#5a5346">Giriş</span>
+    <button class="gold" onclick="newCV()">CV Oluştur →</button>
+  </div></div>`; }
+
+function guide(){
+  const cards = ARTICLES.map((a,i)=> articleCard(a) + (((i+1)%6===0 && i<ARTICLES.length-1)?'</div>'+`<div style="max-width:1100px;margin:0 auto">${adSlot(728,250,'İçerik Arası 728×250')}</div>`+'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1100px;margin:0 auto">':'')).join('');
+  return `<div style="padding-bottom:${S.hideAnchor?'0':'72px'}">
+    ${topNav()}
+    <div style="padding:0 6vw">${adSlot(970,90,'Üst Banner 970×90')}</div>
+    <div style="max-width:1100px;margin:0 auto;padding:30px 6vw 10px;text-align:center">
+      <h1 style="font-family:var(--serif);font-size:clamp(30px,6vw,44px);font-weight:600;letter-spacing:-1px">Kariyer Rehberi</h1>
+      <p style="color:#6b6354;margin-top:10px;max-width:560px;margin-left:auto;margin-right:auto;font-size:15px">CV yazımı, mülakat ve iş arama üzerine pratik, ücretsiz içerikler. Her hafta yeni yazılar eklenir.</p>
+    </div>
+    <div style="padding:24px 6vw 56px"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1100px;margin:0 auto">${cards}</div>
+      <div style="max-width:1100px;margin:0 auto">${adSlot(970,120,'Footer Banner 970×120')}</div>
+    </div>
+    ${siteFooter()}
+    ${anchorAd()}
+  </div>`;
+}
+
+function article(){
+  const a = ARTICLES_MAP[S.articleId] || ARTICLES[0];
+  const others = ARTICLES.filter(x=>x.id!==a.id).slice(0,3);
+  const paras = a.body.map((p,i)=> `<p style="font-size:15px;line-height:1.75;color:#33312b;margin-bottom:18px">${p}</p>` + (i===0?`<div>${adSlot(728,250,'Makale İçi 728×250')}</div>`:'') ).join('');
+  const SB='border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:#5a5346;cursor:pointer';
+  return `<div style="padding-bottom:${S.hideAnchor?'0':'72px'}">
+    <div id="readBar" style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--gold);z-index:99"></div>
+    ${topNav()}
+    <div style="padding:0 6vw">${adSlot(970,90,'Üst Banner 970×90')}</div>
+    <div style="max-width:720px;margin:0 auto;padding:24px 6vw 40px">
+      <span onclick="go('guide')" style="cursor:pointer;font-size:13px;color:#8a6d1f;font-weight:600">← Tüm yazılar</span>
+      <div style="font-size:12px;color:#a99a6e;font-weight:600;margin:16px 0 8px">REHBER · ${a.read} okuma</div>
+      <h1 style="font-family:var(--serif);font-size:clamp(26px,5vw,38px);font-weight:600;line-height:1.18;letter-spacing:-.5px;margin-bottom:14px">${a.title}</h1>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;flex-wrap:wrap"><span style="font-size:12px;color:#998;font-weight:600">Paylaş:</span><button onclick="shareTo('x')" style="${SB}">𝕏</button><button onclick="shareTo('linkedin')" style="${SB}">in</button><button onclick="shareTo('whatsapp')" style="${SB}">WhatsApp</button><button onclick="copyLink()" style="${SB}">🔗 Kopyala</button></div>
+      ${paras}
+      <div style="margin-top:20px">${adSlot(728,250,'Makale Sonu 728×250')}</div>
+      <div style="border-top:1px solid var(--line);margin-top:30px;padding-top:24px">
+        <div style="font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:16px">İlgili Yazılar</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">${others.map(articleCard).join('')}</div>
+      </div>
+      <div style="background:var(--ink);color:#fff;border-radius:16px;padding:26px;margin-top:30px;text-align:center">
+        <div style="font-family:var(--serif);font-size:20px;font-weight:600">Hadi kendi CV'ni oluştur</div>
+        <p style="color:#b3b0bf;font-size:13.5px;margin:6px 0 16px">50+ şablon, ilk CV sadece 10 TL.</p>
+        <button class="gold" style="margin:0 auto" onclick="newCV()">Ücretsiz Başla →</button>
+      </div>
+    </div>
+    ${siteFooter()}
+    ${anchorAd()}
+  </div>`;
+}
+
+function statsBand(){ const items=[['50+','Profesyonel Şablon'],['10','Farklı Düzen'],['24','Rehber Yazısı'],['ATS','Uyumlu Şablonlar']];
+  return `<div style="background:var(--ink);color:#fff;padding:26px 6vw"><div style="max-width:1000px;margin:0 auto;display:flex;justify-content:space-around;flex-wrap:wrap;gap:18px;text-align:center">${items.map(x=>`<div><div style="font-family:var(--serif);font-size:30px;font-weight:600;color:var(--gold)">${x[0]}</div><div style="font-size:12px;color:#b3b0bf;margin-top:2px">${x[1]}</div></div>`).join('')}</div></div>`; }
+
+const TESTIMONIALS=[
+  {n:'Merve K.',r:'Pazarlama Uzmanı',t:'On dakikada CV\u2019mi hazırladım, ertesi hafta üç görüşmeye çağrıldım. Şablonlar gerçekten profesyonel.'},
+  {n:'Burak A.',r:'Yazılım Geliştirici',t:'ATS dostu minimal şablonu seçtim, başvurularımın geri dönüş oranı belirgin arttı.'},
+  {n:'Zeynep T.',r:'Yeni Mezun',t:'Deneyimim azdı ama rehber yazıları ve hazır bölümler sayesinde dolu dolu bir CV çıktı.'},
+];
+function testimonialsSection(){ return `<div style="padding:50px 6vw"><div style="max-width:1100px;margin:0 auto;text-align:center">
+  <h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Kullanıcılar ne diyor?</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:30px">
+  ${TESTIMONIALS.map(x=>`<div class="card" style="padding:22px;text-align:left"><div style="color:var(--gold);font-size:16px;margin-bottom:8px">★★★★★</div><p style="font-size:13.5px;color:#4a463d;line-height:1.6">“${x.t}”</p><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><div style="width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">${x.n.split(' ').map(w=>w[0]).join('')}</div><div><div style="font-size:13px;font-weight:700">${x.n}</div><div style="font-size:11.5px;color:#897f6a">${x.r}</div></div></div></div>`).join('')}
+  </div></div></div>`; }
+
+const FAQ=[
+  ['CVUsta ücretsiz mi?','CV tasarlamak ve canlı önizlemek tamamen ücretsizdir. Yalnızca son adımda, CV\u2019nizi PDF olarak indirirken ödeme alınır; ilk CV sadece 10 TL.'],
+  ['Üyelik gerekiyor mu?','Hayır. Üye olmadan CV\u2019nizi tasarlayabilir ve doğrudan ödeyip indirebilirsiniz. İsterseniz hesap oluşturup CV\u2019lerinizi kaydedebilirsiniz.'],
+  ['Şablonlar ATS uyumlu mu?','Klasik, Minimal ve Zarif şablonlar, başvuru tarama sistemleri (ATS) tarafından kolay okunacak şekilde sade tasarlanmıştır.'],
+  ['CV\u2019mi hangi formatta indiriyorum?','Baskıya ve e-postaya uygun, standart A4 boyutunda PDF olarak indirirsiniz.'],
+  ['Ödeme güvenli mi?','Ödemeler güvenli ödeme altyapısı üzerinden alınır; kart bilgileriniz sitede saklanmaz.'],
+  ['Fotoğraf eklemeli miyim?','Sektöre ve ülkeye göre değişir. Fotoğraflı ve fotoğrafsız şablonlar sunuyoruz; ayrıntı için Kariyer Rehberi\u2019ndeki yazımıza bakabilirsiniz.'],
+];
+function faqSection(){ return `<div style="background:#fff;border-top:1px solid var(--line);padding:50px 6vw"><div style="max-width:760px;margin:0 auto">
+  <h2 style="font-family:var(--serif);font-size:30px;font-weight:600;text-align:center;margin-bottom:26px">Sık Sorulan Sorular</h2>
+  ${FAQ.map((f,i)=>`<div class="card" style="margin-bottom:10px;overflow:hidden">
+    <div onclick="toggleFaq(${i})" style="padding:16px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:700;font-size:14.5px;color:var(--ink)">${f[0]}<span style="color:var(--gold);font-size:18px">${S.faqOpen===i?'−':'+'}</span></div>
+    ${S.faqOpen===i?`<div style="padding:0 18px 16px;font-size:13.5px;color:#5a5346;line-height:1.6">${f[1]}</div>`:''}
+  </div>`).join('')}
+</div></div>`; }
+function toggleFaq(i){ S.faqOpen = S.faqOpen===i?null:i; rerender(); }
+
+function newsletter(){ return `<div style="padding:44px 6vw"><div style="max-width:760px;margin:0 auto;background:var(--ink);border-radius:18px;padding:30px;text-align:center;color:#fff">
+  <h3 style="font-family:var(--serif);font-size:22px;font-weight:600">Kariyer ipuçlarını kaçırma</h3>
+  <p style="color:#b3b0bf;font-size:13.5px;margin:8px 0 18px">Yeni rehber yazıları ve iş arama tüyolarını e-postana gönderelim.</p>
+  <div style="display:flex;gap:8px;max-width:420px;margin:0 auto;flex-wrap:wrap"><input id="newsEmail" class="inp" style="flex:1;min-width:180px;background:#fff" placeholder="E-posta adresin"><button class="gold" onclick="subscribe()">Abone Ol</button></div>
+  <div style="font-size:10.5px;color:#8d8a99;margin-top:10px">İstediğin zaman abonelikten çıkabilirsin. Gizlilik Politikamıza tabidir.</div>
+</div></div>`; }
+function subscribe(){ const e=document.getElementById('newsEmail'); const v=e?e.value.trim():''; if(!v||v.indexOf('@')<0){ toast('Lütfen geçerli bir e-posta girin'); return; } if(e)e.value=''; toast('Teşekkürler! Aboneliğin alındı.'); }
+
+function howItWorks(){ const steps=[['1','Şablon seç','50+ modern şablondan birini seç; istediğin an değiştir, rengini ayarla.'],['2','Bilgilerini gir','Canlı önizlemeyle ne yazdığını anında CV üzerinde gör.'],['3','İndir','Tek tıkla baskıya hazır, ATS uyumlu PDF olarak indir.']];
+  return `<div style="padding:50px 6vw"><div style="max-width:1000px;margin:0 auto;text-align:center">
+    <h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Nasıl Çalışır?</h2>
+    <p style="color:#6b6354;margin-top:6px">Üç adımda profesyonel CV.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:32px">${steps.map(s=>`<div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px"><div style="width:46px;height:46px;border-radius:50%;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;font-weight:700;margin:0 auto 14px">${s[0]}</div><h3 style="font-size:16px;font-weight:700">${s[1]}</h3><p style="font-size:13px;color:#6b6354;margin-top:6px;line-height:1.5">${s[2]}</p></div>`).join('')}</div>
+  </div></div>`; }
+
+function landing(){
+  const base = S.showAll?TEMPLATES:TEMPLATES.slice(0,12);
+  const items = base.map(t=>thumb(t,"startWith('"+t.id+"')",false));
+  if(items.length>8) items.splice(8,0,adCard());
+  const gal = items.join('');
+  return `
+  <div style="overflow:hidden;padding-bottom:${S.hideAnchor?'0':'72px'}">
+    ${topNav()}
+    <div style="padding:0 6vw">${adSlot(970,90,'Üst Banner 970×90 / responsive')}</div>
+    <div style="max-width:1300px;margin:0 auto;padding:24px 6vw 48px;display:flex;gap:48px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1 1 380px">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:12px;color:#8a6d1f;font-weight:600;margin-bottom:20px">✦ İlk CV'niz sadece 10 TL</div>
+        <h1 style="font-family:var(--serif);font-size:clamp(36px,8vw,60px);line-height:1.03;font-weight:600;letter-spacing:-1.5px">Dakikalar içinde<br><span style="font-style:italic;color:var(--gold)">işe alınan</span> bir CV.</h1>
+        <p style="font-size:16px;color:#6b6354;margin-top:18px;max-width:440px;line-height:1.6">50+ profesyonel şablon arasından seç, bilgilerini gir, canlı önizlemeyi gör ve PDF olarak indir.</p>
+        <div style="display:flex;gap:10px;margin-top:26px;flex-wrap:wrap"><button class="gold" style="padding:14px 26px;font-size:15px" onclick="newCV()">Ücretsiz Dene →</button><a class="ghost" style="padding:13px 24px" href="#galeri">Şablonları Gör</a></div>
+        <div style="display:flex;gap:22px;margin-top:32px;flex-wrap:wrap">${[['50+','Profesyonel Şablon'],['10 TL','İlk CV'],['∞','Sınırsız Düzenleme']].map(x=>`<div><div style="font-family:var(--serif);font-size:24px;font-weight:600">${x[0]}</div><div style="font-size:11.5px;color:#897f6a">${x[1]}</div></div>`).join('')}</div>
+      </div>
+      <div class="hero-art" style="flex:1 1 320px;display:flex;justify-content:center"><div style="position:relative"><div style="position:absolute;inset:-30px;background:radial-gradient(circle at 60% 40%,#c79a3f33,transparent 65%)"></div><div class="a4" style="position:relative;width:300px;transform:rotate(2deg);box-shadow:0 40px 80px rgba(20,20,40,.28)">${renderCV(DEFAULT_TPL,SAMPLE)}</div></div></div>
+    </div>
+    ${statsBand()}
+    <div style="background:#fff;padding:56px 6vw;border-top:1px solid var(--line)"><div style="max-width:1100px;margin:0 auto">
+      <h2 style="font-family:var(--serif);font-size:30px;text-align:center;font-weight:600">Neden CVUsta?</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;margin-top:34px">${[['⚡','Canlı Önizleme','Yazdığın her şey anında CV üzerinde görünür.'],['▤','50+ Şablon','Her sektöre uygun düzen ve renk seçeneği.'],['⤓','Tek Tıkla PDF','İşveren dostu, baskıya hazır A4 PDF indir.'],['🛡','Güvenli Ödeme','iyzico altyapısı ile hızlı ve güvenli tahsilat.']].map(c=>`<div style="background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:22px"><div style="font-size:24px;margin-bottom:10px">${c[0]}</div><h3 style="font-size:15px;font-weight:700">${c[1]}</h3><p style="font-size:13px;color:#6b6354;margin-top:6px;line-height:1.5">${c[2]}</p></div>`).join('')}</div>
+    </div></div>
+    ${howItWorks()}
+    <div style="max-width:1100px;margin:0 auto;padding:0 6vw">${adSlot(728,250,'İçerik Arası 728×250')}</div>
+    <div id="galeri" style="padding:56px 6vw"><div style="max-width:1100px;margin:0 auto;text-align:center">
+      <h2 style="font-family:var(--serif);font-size:30px;font-weight:600">50+ Profesyonel Şablon</h2>
+      <p style="color:#6b6354;margin-top:6px">10 farklı düzen, 5 renk teması. Hepsi tamamen düzenlenebilir.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:28px">${gal}</div>
+      ${S.showAll?'':`<button class="ghost" style="margin-top:26px" onclick="toggleAll()">Tüm 50 şablonu gör ↓</button>`}
+    </div></div>
+    <div style="background:#fff;border-top:1px solid var(--line);padding:56px 6vw"><div style="max-width:1100px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:24px"><div><h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Kariyer Rehberi</h2><p style="color:#6b6354;margin-top:6px">CV ve iş arama üzerine ücretsiz, pratik içerikler.</p></div><button class="ghost" onclick="go('guide')">Tüm Yazılar →</button></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px">${ARTICLES.slice(0,3).map(articleCard).join('')}</div>
+    </div></div>
+    <div id="fiyat" style="background:var(--ink);color:#fff;padding:56px 6vw"><div style="max-width:880px;margin:0 auto;text-align:center">
+      <h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Basit, dürüst fiyatlandırma</h2>
+      <p style="color:#b3b0bf;margin-top:6px">Abonelik yok. Sadece indirdiğin CV için öde.</p>
+      <div style="display:flex;gap:20px;margin-top:36px;flex-wrap:wrap;justify-content:center">
+        ${priceCard('10','İlk CV','Yeni başlayanlar için',['50+ şablon','Sınırsız düzenleme','PDF indirme','Canlı önizleme'],true,'EN POPÜLER')}
+        ${priceCard('50','Sonraki CV\u2019ler','Her ek CV için',['Farklı pozisyonlar için ayrı CV','Tüm şablonlar','Sınırsız revizyon','Öncelikli destek'],false,'')}
+      </div>
+      <p style="color:#8d8a99;font-size:12px;margin-top:22px">* Önizleme her zaman ücretsiz. Ödeme yalnızca PDF indirme aşamasında alınır.</p>
+    </div></div>
+    <div style="padding:48px 6vw;text-align:center"><h2 style="font-family:var(--serif);font-size:26px;font-weight:600">Hayalindeki işe bir CV uzaktasın.</h2><button class="gold" style="margin-top:20px;padding:14px 30px;font-size:15px" onclick="newCV()">Hemen Başla →</button></div>
+    <div style="padding:10px 6vw"><div style="max-width:1100px;margin:0 auto">${adSlot(970,120,'Footer Banner 970×120')}</div></div>
+    ${siteFooter()}
+    ${anchorAd()}
+  </div>`;
+}
+function priceCard(price,title,desc,perks,feat,badge){
+  return `<div style="background:${feat?'#fff':'rgba(255,255,255,.06)'};color:${feat?'var(--ink)':'#fff'};border-radius:18px;padding:28px;width:280px;text-align:left;border:${feat?'2px solid var(--gold)':'1px solid rgba(255,255,255,.14)'};position:relative">
+    ${badge?`<span style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap">♛ ${badge}</span>`:''}
+    <div style="font-size:14px;font-weight:600;opacity:.85">${title}</div><div style="font-size:12px;opacity:.6;margin-bottom:12px">${desc}</div>
+    <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--serif);font-size:42px;font-weight:600">${price}</span><span style="font-size:18px;font-weight:600">TL</span></div>
+    <div style="height:1px;background:${feat?'var(--line)':'rgba(255,255,255,.16)'};margin:16px 0"></div>
+    ${perks.map(p=>`<div style="display:flex;gap:8px;align-items:center;font-size:13px;margin-bottom:9px">✓ ${p}</div>`).join('')}
+    <button onclick="newCV()" style="width:100%;justify-content:center;margin-top:14px;border-radius:10px;padding:12px;font-weight:700;${feat?'background:var(--gold);color:var(--ink)':'background:transparent;color:#fff;border:1.5px solid var(--gold)'}">${feat?'10 TL\u2019ye Başla':'CV Oluştur'}</button>
+  </div>`;
+}
+
+function auth(){
+  const signup = authMode==='signup';
+  return `<div style="min-height:100vh;display:flex">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="width:100%;max-width:380px">
+        <button class="ghost" style="border:none;padding:6px 0;font-size:12px;margin-bottom:18px" onclick="go('landing')">← Ana sayfa</button>
+        ${LOGO()}
+        <h1 style="font-family:var(--serif);font-size:27px;margin-top:20px;font-weight:600">${signup?'Hesap oluştur':'Tekrar hoş geldin'}</h1>
+        <p style="color:#897f6a;font-size:14px;margin:4px 0 22px">${signup?"Saniyeler içinde başla, ilk CV'n 10 TL.":'Hesabına giriş yap.'}</p>
+        ${signup?`<div style="margin-bottom:12px"><label class="label">Ad Soyad</label><input class="inp" id="f_name" placeholder="Ahmet Demir"></div>`:''}
+        <div style="margin-bottom:12px"><label class="label">E-posta</label><input class="inp" id="f_email" placeholder="ornek@mail.com"></div>
+        <div style="margin-bottom:12px"><label class="label">Şifre</label><input class="inp" id="f_pass" type="password" placeholder="••••••••"></div>
+        <div id="authErr" style="color:#c0392b;font-size:12.5px;margin-bottom:10px"></div>
+        <button class="gold" style="width:100%;justify-content:center" onclick="submitAuth()">${signup?'Hesap Oluştur →':'Giriş Yap →'}</button>
+        <div style="text-align:center;margin-top:16px;font-size:13px;color:#897f6a">${signup?'Zaten hesabın var mı? ':'Hesabın yok mu? '}<button onclick="toggleMode()" style="background:none;color:#8a6d1f;font-weight:700;font-size:13px">${signup?'Giriş yap':'Kayıt ol'}</button></div>
+      </div>
+    </div>
+    <div class="split-art" style="flex:1;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden">
+      <div style="position:absolute;width:380px;height:380px;background:radial-gradient(circle,#c79a3f22,transparent 70%);top:-100px;right:-100px"></div>
+      <div class="a4" style="width:290px;transform:rotate(-4deg);box-shadow:0 30px 70px rgba(0,0,0,.5)">${renderCV(DEFAULT_TPL,SAMPLE)}</div>
+    </div>
+  </div>`;
+}
+function toggleMode(){ authMode = authMode==='signup'?'login':'signup'; rerender(); }
+function submitAuth(){
+  const nameEl=document.getElementById('f_name');
+  const name=nameEl?nameEl.value:'';
+  const email=(document.getElementById('f_email').value||'').toLowerCase();
+  const pass=document.getElementById('f_pass').value||'';
+  const err=document.getElementById('authErr');
+  if(!email||!pass){err.textContent='E-posta ve şifre zorunludur.';return;}
+  if(authMode==='signup'){
+    if(!name){err.textContent='Lütfen adınızı girin.';return;}
+    if(S.users[email]){err.textContent='Bu e-posta zaten kayıtlı. Giriş yapın.';return;}
+    S.users[email]={name,email,pass}; S.user={name,email};
+  }else{
+    const u=S.users[email];
+    if(!u||u.pass!==pass){err.textContent='E-posta veya şifre hatalı.';return;}
+    S.user={name:u.name,email:u.email};
+  }
+  go('dashboard');
+}
+
+function dashboard(){
+  const first=S.user.name.split(' ')[0];
+  const cards=S.cvs.length?S.cvs.map(c=>`
+    <div class="card" style="overflow:hidden">
+      <div style="height:160px;background:#f0ece1;position:relative;overflow:hidden;display:flex;justify-content:center">
+        <div style="width:340px;height:480px;transform:scale(.46);transform-origin:top center;pointer-events:none">${renderCV(c.template,c.data)}</div>
+        <span style="position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;${c.paid?'background:#1f9d55;color:#fff':'background:var(--gold);color:var(--ink)'}">${c.paid?'Aktif':'Taslak'}</span>
+      </div>
+      <div style="padding:14px">
+        <div style="font-weight:700;font-size:14px">${esc(c.data.fullName)||'İsimsiz CV'}</div>
+        <div style="font-size:12px;color:#998;margin-bottom:4px">${esc(c.data.title)||'Ünvan belirtilmemiş'}</div>
+        <div style="font-size:10.5px;color:#b3a98f;margin-bottom:10px">${TEMPLATES_MAP[c.template]?TEMPLATES_MAP[c.template].name:''}</div>
+        <div style="display:flex;gap:8px">
+          <button class="ghost" style="padding:7px 12px;font-size:12.5px;flex:1;justify-content:center" onclick="openCV('${c.id}')">✎ Düzenle</button>
+          <button class="ghost" style="padding:7px 10px;border-color:#e0c0bc;color:#c0392b" onclick="delCV('${c.id}')">🗑</button>
+        </div>
+      </div>
+    </div>`).join(''):`
+    <div class="card" style="border:2px dashed #ddd5c2;padding:50px 24px;text-align:center;grid-column:1/-1">
+      <div style="width:58px;height:58px;border-radius:16px;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px">▤</div>
+      <h3 style="font-family:var(--serif);font-size:21px">Henüz CV'n yok</h3>
+      <p style="color:#897f6a;margin:8px 0 18px;font-size:14px">İlk profesyonel CV'ni sadece <b>10 TL</b>'ye oluştur.</p>
+      <button class="gold" style="margin:0 auto" onclick="newCV()">✦ İlk CV'mi Oluştur</button>
+    </div>`;
+  return `<div style="min-height:100vh">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:#fff;border-bottom:1px solid var(--line)">${LOGO()}<div style="display:flex;align-items:center;gap:12px"><span style="font-size:12.5px;color:#897f6a" class="hero-art">${esc(S.user.email)}</span><button class="ghost" style="padding:7px 14px;font-size:13px" onclick="logout()">Çıkış</button></div></div>
+    <div style="max-width:1000px;margin:0 auto;padding:32px 22px">
+      <div class="row2" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:24px">
+        <div><h1 style="font-family:var(--serif);font-size:28px;font-weight:600">Merhaba, ${esc(first)} 👋</h1><p style="color:#897f6a;margin-top:4px;font-size:14px">${paidCount()===0?"İlk CV'n sadece 10 TL!":'Sıradaki CV '+nextPrice()+' TL.'}</p></div>
+        <button class="gold" onclick="newCV()">+ Yeni CV — ${nextPrice()} TL</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">${cards}</div>
+    </div>
+  </div>`;
+}
+
+function editor(){
+  const c=S.active, d=c.data, price=c.paid?0:nextPrice();
+  const tplName=TEMPLATES_MAP[c.template]?TEMPLATES_MAP[c.template].name:'Seç';
+  const expRows=d.experience.map((e,i)=>`<div style="background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">
+    <div style="display:flex;gap:8px"><input class="inp" placeholder="Pozisyon" value="${esc(e.role)}" oninput="upd('experience',${i},'role',this.value)"><input class="inp" placeholder="Şirket" value="${esc(e.company)}" oninput="upd('experience',${i},'company',this.value)"></div>
+    <input class="inp" style="margin-top:8px" placeholder="2022 — Günümüz" value="${esc(e.period)}" oninput="upd('experience',${i},'period',this.value)">
+    <textarea class="inp" style="margin-top:8px;min-height:48px" placeholder="Sorumluluklar ve başarılar…" oninput="upd('experience',${i},'desc',this.value)">${esc(e.desc)}</textarea>
+    ${rowCtrls('experience',i,d.experience.length)}
+  </div>`).join('');
+  const eduRows=d.education.map((e,i)=>`<div style="background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">
+    <input class="inp" placeholder="Okul / Üniversite" value="${esc(e.school)}" oninput="upd('education',${i},'school',this.value)">
+    <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Bölüm" value="${esc(e.degree)}" oninput="upd('education',${i},'degree',this.value)"><input class="inp" placeholder="2018 — 2022" value="${esc(e.period)}" oninput="upd('education',${i},'period',this.value)"></div>
+    ${rowCtrls('education',i,d.education.length)}
+  </div>`).join('');
+  const box='background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px';
+  const projRows=d.projects.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Proje adı" value="${esc(e.name)}" oninput="upd('projects',${i},'name',this.value)"><textarea class="inp" style="margin-top:8px;min-height:44px" placeholder="Kısa açıklama" oninput="upd('projects',${i},'desc',this.value)">${esc(e.desc)}</textarea>${rowCtrls('projects',i,d.projects.length)}</div>`).join('');
+  const certRows=d.certificates.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Sertifika adı" value="${esc(e.name)}" oninput="upd('certificates',${i},'name',this.value)"><div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Veren kurum" value="${esc(e.issuer)}" oninput="upd('certificates',${i},'issuer',this.value)"><input class="inp" placeholder="Yıl" value="${esc(e.year)}" oninput="upd('certificates',${i},'year',this.value)"></div>${rowCtrls('certificates',i,d.certificates.length)}</div>`).join('');
+  const score=cvScore(d);
+  const accents=['#22416b','#7e2738','#1f6f5c','#2c303b','#8f6b1e','#3a3f8a','#0f6e6e','#9c4a23'];
+  const accentSwatches=accents.map(a=>`<span onclick="setAccent('${a}')" style="width:24px;height:24px;border-radius:50%;background:${a};cursor:pointer;display:inline-block;box-shadow:${d.accent===a?'0 0 0 2px #fff,0 0 0 4px '+a:'0 0 0 1px rgba(0,0,0,.12)'}"></span>`).join('')+`<span onclick="setAccent('')" style="font-size:12px;color:#8a6d1f;cursor:pointer;font-weight:600;margin-left:4px">Varsayılan</span>`;
+  return `<div style="min-height:100vh">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;gap:8px;flex-wrap:wrap">
+      <button class="ghost" style="padding:8px 12px;font-size:13px" onclick="${S.user?"go('dashboard')":"go('landing')"}">${S.user?'← Panel':'← Ana Sayfa'}</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="ghost" style="padding:8px 12px;font-size:12.5px" onclick="openTplPicker()">▤ ${tplName} ▾</button>
+        <button class="gold" style="padding:9px 16px;font-size:13px" onclick="download()">${c.paid?'⤓ PDF İndir':'🔒 '+price+" TL'ye İndir"}</button>
+      </div>
+    </div>
+    <div class="row2" style="display:flex;max-width:1300px;margin:0 auto;gap:20px;padding:20px;align-items:flex-start">
+      <div class="card" style="flex:1 1 360px;min-width:280px;padding:20px">
+        <div style="background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#5a5346">CV Tamamlanma</span><span id="scorePct" style="font-size:13px;font-weight:800;color:#8a6d1f">%${score}</span></div>
+          <div style="height:8px;background:#e7e1d2;border-radius:6px;overflow:hidden"><div id="scoreFill" style="height:100%;width:${score}%;background:linear-gradient(90deg,#c79a3f,#8f6b1e);transition:width .3s"></div></div>
+          <div style="display:flex;gap:8px;margin-top:10px"><button onclick="fillSample()" style="flex:1;border:1.5px solid var(--gold);background:#fff;color:#8a6d1f;border-radius:8px;padding:7px;font-size:12px;font-weight:700;cursor:pointer">✨ Örnek Doldur</button><button onclick="clearCV()" style="flex:1;border:1.5px solid var(--line);background:#fff;color:#6b6354;border-radius:8px;padding:7px;font-size:12px;font-weight:600;cursor:pointer">Temizle</button></div>
+        </div>
+        <h3 style="font-family:var(--serif);font-size:17px;margin-bottom:14px">Kişisel Bilgiler</h3>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div style="width:64px;height:64px;border-radius:50%;overflow:hidden;background:#f0ece1;flex:0 0 auto;border:1px solid var(--line)"><img src="${d.photo?d.photo:avatar(d.fullName,'#22416b','#ffffff')}" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+          <div>
+            <label class="gold" style="padding:8px 14px;font-size:12.5px;cursor:pointer;display:inline-flex">📷 Fotoğraf Yükle<input type="file" accept="image/*" onchange="onPhoto(this)" style="display:none"></label>
+            ${d.photo?`<button onclick="removePhoto()" style="background:none;color:#c0392b;font-size:12px;margin-left:8px">Kaldır</button>`:''}
+            <div style="font-size:10.5px;color:#998;margin-top:6px;max-width:230px">Klasik, Minimal ve Zarif şablonlarda fotoğraf görünmez (ATS dostu).</div>
+          </div>
+        </div>
+        <div style="margin-bottom:14px"><label class="label">Vurgu Rengi (isteğe bağlı)</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${accentSwatches}</div></div>
+        ${[['fullName','Ad Soyad','Ahmet Demir'],['title','Ünvan','Yazılım Geliştirici']].map(f=>`<div style="margin-bottom:11px"><label class="label">${f[1]}</label><input class="inp" value="${esc(d[f[0]])}" oninput="updField('${f[0]}',this.value)" placeholder="${f[2]}"></div>`).join('')}
+        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">E-posta</label><input class="inp" value="${esc(d.email)}" oninput="updField('email',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Telefon</label><input class="inp" value="${esc(d.phone)}" oninput="updField('phone',this.value)"></div></div>
+        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">Konum</label><input class="inp" value="${esc(d.location)}" oninput="updField('location',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Web / LinkedIn</label><input class="inp" value="${esc(d.website)}" oninput="updField('website',this.value)"></div></div>
+        <div style="margin-bottom:11px"><label class="label">Hakkımda / Özet</label><textarea class="inp" oninput="updField('summary',this.value)" placeholder="Kendinizi 2-3 cümleyle özetleyin.">${esc(d.summary)}</textarea></div>
+        <div style="height:1px;background:var(--line);margin:18px 0"></div>
+        <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">İş Deneyimi</h3>${expRows}
+        <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('experience')">+ Deneyim Ekle</button>
+        <div style="height:1px;background:var(--line);margin:18px 0"></div>
+        <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">Eğitim</h3>${eduRows}
+        <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('education')">+ Eğitim Ekle</button>
+        <div style="height:1px;background:var(--line);margin:18px 0"></div>
+        <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">Projeler</h3>${projRows}
+        <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('projects')">+ Proje Ekle</button>
+        <div style="height:1px;background:var(--line);margin:18px 0"></div>
+        <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">Sertifikalar</h3>${certRows}
+        <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('certificates')">+ Sertifika Ekle</button>
+        <div style="height:1px;background:var(--line);margin:18px 0"></div>
+        <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">Yetenekler & Diller</h3>
+        <div style="margin-bottom:11px"><label class="label">Yetenekler (virgülle ayır)</label><textarea class="inp" style="min-height:46px" oninput="updField('skills',this.value)" placeholder="JavaScript, React, Takım Yönetimi">${esc(d.skills)}</textarea></div>
+        <div style="margin-bottom:11px"><label class="label">Diller</label><input class="inp" value="${esc(d.languages)}" oninput="updField('languages',this.value)" placeholder="Türkçe (Ana dil), İngilizce (İleri)"></div>
+      </div>
+      <div class="stick" style="flex:1 1 420px;min-width:300px;position:sticky;top:72px">
+        <div style="font-size:12px;color:#998;margin-bottom:8px;display:flex;align-items:center;gap:6px">👁 Canlı Önizleme
+          <span style="margin-left:auto;display:flex;align-items:center;gap:4px">
+            <button onclick="zoomBy(-0.1)" style="border:1px solid var(--line);background:#fff;border-radius:6px;width:26px;height:26px;font-size:15px;cursor:pointer">−</button>
+            <button onclick="zoomReset()" style="border:1px solid var(--line);background:#fff;border-radius:6px;padding:0 8px;height:26px;font-size:11px;cursor:pointer">%${Math.round((S.zoom||1)*100)}</button>
+            <button onclick="zoomBy(0.1)" style="border:1px solid var(--line);background:#fff;border-radius:6px;width:26px;height:26px;font-size:15px;cursor:pointer">+</button>
+          </span>
+          ${c.paid?'':`<span style="color:#8a6d1f;font-weight:600;margin-left:8px">İndirmek için ${price} TL</span>`}
+        </div>
+        <div style="position:relative;overflow:auto"><div id="zoomWrap" style="transform:scale(${S.zoom||1});transform-origin:top center"><div class="a4" id="printArea">${renderCV(c.template,d)}</div></div>
+        ${c.paid?'':`<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(transparent,rgba(255,255,255,.96));display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px"><button class="gold" onclick="download()">🔒 ${price} TL ile Kilidi Aç & İndir</button></div>`}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ====================== ŞABLON SEÇİCİ (50) ====================== */
+function tplFilterChips(){ const fams=[['all','Tümü']].concat(LAYOUT_LIST); return fams.map(f=>`<button onclick="filterTpl('${f[0]}')" style="padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;${S.tplFilter===f[0]?'background:var(--ink);color:#fff':'background:var(--cream);color:#6b6354;border:1px solid var(--line)'}">${f[1]}</button>`).join(''); }
+function tplGridHTML(){ const list = S.tplFilter==='all'?TEMPLATES:TEMPLATES.filter(t=>t.layout===S.tplFilter); return list.map(t=>thumb(t,`pickTemplate('${t.id}')`,true)).join(''); }
+function openTplPicker(){
+  document.getElementById('app').insertAdjacentHTML('beforeend',`<div id="tplPicker" style="position:fixed;inset:0;background:rgba(10,12,24,.65);backdrop-filter:blur(4px);z-index:120;display:flex;padding:14px">
+    <div style="background:#fff;margin:auto;width:100%;max-width:900px;max-height:92vh;border-radius:18px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><div style="font-family:var(--serif);font-size:18px;font-weight:600">Şablon Seç <span style="font-size:12px;color:#998;font-weight:400">(50 şablon)</span></div><button onclick="closeTplPicker()" style="background:none;font-size:20px">✕</button></div>
+      <div id="tplFilters" style="padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line)">${tplFilterChips()}</div>
+      <div id="tplGrid" style="padding:18px 16px;overflow:auto;display:flex;flex-wrap:wrap;gap:14px;justify-content:center">${tplGridHTML()}</div>
+    </div></div>`);
+}
+function closeTplPicker(){ const m=document.getElementById('tplPicker'); if(m)m.remove(); }
+function filterTpl(k){ S.tplFilter=k; const g=document.getElementById('tplGrid'); if(g)g.innerHTML=tplGridHTML(); const f=document.getElementById('tplFilters'); if(f)f.innerHTML=tplFilterChips(); }
+function pickTemplate(id){ if(S.active) S.active.template=id; closeTplPicker(); rerender(); }
+
+/* ====================== ÖDEME ====================== */
+function paymentModal(){
+  const price=nextPrice();
+  return `<div id="payModal" style="position:fixed;inset:0;background:rgba(10,12,24,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px">
+    <div style="background:#fff;border-radius:18px;width:100%;max-width:400px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+      <div style="background:var(--ink);padding:20px 22px;color:#fff;position:relative">
+        <button onclick="closePay()" style="position:absolute;right:14px;top:14px;background:none;color:#fff;font-size:18px">✕</button>
+        <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#bbb">🛡 Güvenli Ödeme</div>
+        <div style="font-family:var(--serif);font-size:27px;font-weight:600;margin-top:6px">${price} TL</div>
+        <div style="font-size:12px;color:#cfcfd8">${paidCount()===0?"İlk CV'niz — özel başlangıç fiyatı":'CV indirme ve PDF dışa aktarma'}</div>
+      </div>
+      <div id="payBody" style="padding:22px">
+        <div style="margin-bottom:12px"><label class="label">💳 Kart Numarası</label><input class="inp" placeholder="0000 0000 0000 0000" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim()"></div>
+        <div style="margin-bottom:12px"><label class="label">Kart Üzerindeki İsim</label><input class="inp" placeholder="AD SOYAD"></div>
+        <div style="display:flex;gap:12px"><div style="flex:1;margin-bottom:12px"><label class="label">Son Kullanma</label><input class="inp" placeholder="AA/YY"></div><div style="flex:1;margin-bottom:12px"><label class="label">CVV</label><input class="inp" placeholder="123"></div></div>
+        <button class="gold" style="width:100%;justify-content:center;margin-top:6px" onclick="processPay()">🔒 ${price} TL Öde</button>
+        <div style="font-size:10.5px;color:#999;text-align:center;margin-top:12px;line-height:1.5">Bu bir <b>demo</b> ödeme ekranıdır. Gerçek tahsilat yapılmaz.<br>Canlıda iyzico ile entegre edilir.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ====================== AKSİYONLAR ====================== */
+function go(v){ S.view=v; render(true); }
+function openArticle(id){ S.articleId=id; go('article'); }
+function openLegal(k){ S.legalKey=k; go('legal'); }
+function closeAnchor(){ S.hideAnchor=true; const a=document.getElementById('anchorAd'); if(a)a.remove(); }
+function acceptCookies(){ S.cookieConsent='accepted'; rerender(); }
+function rejectCookies(){ S.cookieConsent='rejected'; rerender(); }
+function setMeta(){
+  const A=ARTICLES_MAP[S.articleId], L=LEGAL[S.legalKey];
+  const M={ landing:['CVUsta — Ücretsiz Online CV Oluşturucu | 50+ Şablon','Dakikalar içinde profesyonel, fotoğraflı CV oluştur. 50+ şablon, canlı önizleme ve PDF indirme.'],
+    guide:['Kariyer Rehberi — CV ve İş Arama İpuçları | CVUsta','CV yazımı, mülakat ve iş arama üzerine ücretsiz, pratik rehber yazıları.'],
+    article:[A?A.title+' | CVUsta':'Kariyer Rehberi | CVUsta', A?A.excerpt:''],
+    legal:[L?L.title+' | CVUsta':'CVUsta', 'CVUsta yasal bilgilendirme sayfası.'],
+    auth:['Giriş / Kayıt | CVUsta','CVUsta hesabına giriş yap veya ücretsiz kayıt ol.'],
+    dashboard:['Panelim | CVUsta','CV\'lerini yönet ve yenisini oluştur.'],
+    editor:['CV Düzenleyici | CVUsta','CV\'ni düzenle, şablon seç ve PDF olarak indir.'] };
+  const m=M[S.view]||M.landing;
+  try{
+    document.title=m[0];
+    const set=(id,val)=>{ const el=document.getElementById(id); if(el)el.setAttribute('content',val); };
+    set('metaDesc',m[1]); set('ogTitle',m[0]); set('ogDesc',m[1]); set('twTitle',m[0]); set('twDesc',m[1]);
+    const ld=document.getElementById('ldjson');
+    if(ld){ ld.textContent = (S.view==='article'&&A)
+      ? JSON.stringify({"@context":"https://schema.org","@type":"Article",headline:A.title,description:A.excerpt,author:{"@type":"Organization",name:"CVUsta"},publisher:{"@type":"Organization",name:"CVUsta"}})
+      : JSON.stringify({"@context":"https://schema.org","@type":"WebSite",name:"CVUsta"}); }
+  }catch(e){}
+}
+function onPhoto(input){ const f=input.files&&input.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ S.active.data.photo=r.result; rerender(); }; r.readAsDataURL(f); }
+function removePhoto(){ S.active.data.photo=""; rerender(); }
+function toggleAll(){ S.showAll=true; rerender(); }
+function logout(){ S.user=null; S.cvs=[]; S.active=null; go('landing'); }
+function newCV(){ S.active={id:uid(),template:DEFAULT_TPL,paid:false,data:emptyData()}; S.cvs.unshift(S.active); go('editor'); }
+function startWith(id){ S.active={id:uid(),template:id,paid:false,data:emptyData()}; S.cvs.unshift(S.active); go('editor'); }
+function openCV(id){ S.active=S.cvs.find(c=>c.id===id); go('editor'); }
+function delCV(id){ S.cvs=S.cvs.filter(c=>c.id!==id); if(S.active&&S.active.id===id)S.active=null; rerender(); }
+function updField(k,v){ S.active.data[k]=v; livePreview(); }
+function upd(sec,i,k,v){ S.active.data[sec][i][k]=v; livePreview(); }
+function addRow(sec){ const B={experience:{role:"",company:"",period:"",desc:""},education:{school:"",degree:"",period:""},projects:{name:"",desc:""},certificates:{name:"",issuer:"",year:""}}; S.active.data[sec].push(B[sec]||{}); rerender(); }
+function delRow(sec,i){ S.active.data[sec].splice(i,1); rerender(); }
+function moveRow(sec,i,dir){ const a=S.active.data[sec]; const j=i+dir; if(j<0||j>=a.length) return; const t=a[i]; a[i]=a[j]; a[j]=t; rerender(); }
+function rowCtrls(sec,i,len){
+  const ar=(lbl,dir,on)=>`<button ${on?'':'disabled'} onclick="${on?"moveRow('"+sec+"',"+i+","+dir+")":''}" style="background:#fff;border:1px solid ${on?'var(--line)':'#f1ecdf'};border-radius:6px;width:28px;height:26px;font-size:12px;cursor:${on?'pointer':'default'};color:${on?'#6b6354':'#d8d0bf'}">${lbl}</button>`;
+  return `<div style="display:flex;align-items:center;gap:5px;margin-top:8px">${ar('↑',-1,i>0)}${ar('↓',1,i<len-1)}<button onclick="delRow('${sec}',${i})" style="background:none;border:none;color:#c0392b;font-size:11.5px;cursor:pointer;margin-left:auto">🗑 Sil</button></div>`;
+}
+function zoomBy(d){ S.zoom=Math.min(1.8,Math.max(0.6,Math.round(((S.zoom||1)+d)*10)/10)); rerender(); }
+function zoomReset(){ S.zoom=1; rerender(); }
+function shareUrl(){ try{ return window.location.href; }catch(e){ return ''; } }
+function shareTo(net){ const u=encodeURIComponent(shareUrl()); const a=ARTICLES_MAP[S.articleId]; const t=encodeURIComponent(a?a.title:'CVUsta'); let url='';
+  if(net==='x') url='https://twitter.com/intent/tweet?text='+t+'&url='+u;
+  else if(net==='linkedin') url='https://www.linkedin.com/sharing/share-offsite/?url='+u;
+  else if(net==='whatsapp') url='https://wa.me/?text='+t+'%20'+u;
+  try{ window.open(url,'_blank'); }catch(e){} }
+function copyLink(){ const v=shareUrl(); try{ if(navigator.clipboard) navigator.clipboard.writeText(v); toast('Bağlantı kopyalandı'); }catch(e){ toast('Bağlantı kopyalandı'); } }
+function updateReadBar(){ try{ const b=document.getElementById('readBar'); if(!b) return; const h=document.documentElement.scrollHeight-window.innerHeight; const sc=window.scrollY||window.pageYOffset||0; b.style.width=(h>0?Math.min(100,sc/h*100):0)+'%'; }catch(e){} }
+function livePreview(){ const el=document.getElementById('printArea'); if(el)el.innerHTML=renderCV(S.active.template,S.active.data);
+  const s=cvScore(S.active.data); const f=document.getElementById('scoreFill'); if(f)f.style.width=s+'%'; const p=document.getElementById('scorePct'); if(p)p.textContent='%'+s; }
+function cvScore(d){ let pts=0; const total=8;
+  if(d.fullName&&d.fullName.trim())pts++; if(d.title&&d.title.trim())pts++; if((d.email&&d.email.trim())||(d.phone&&d.phone.trim()))pts++; if(d.summary&&d.summary.trim())pts++;
+  if((d.experience||[]).some(e=>e.role||e.company))pts++; if((d.education||[]).some(e=>e.school))pts++;
+  if(d.skills&&d.skills.trim())pts++;
+  if((d.projects||[]).some(p=>p.name)||(d.certificates||[]).some(c=>c.name)||(d.languages&&d.languages.trim()))pts++;
+  return Math.round(pts/total*100); }
+function setAccent(hex){ S.active.data.accent=hex; rerender(); }
+function fillSample(){ S.active.data=JSON.parse(JSON.stringify(SAMPLE)); S.active.data.accent=''; rerender(); toast('Örnek bilgiler dolduruldu'); }
+function clearCV(){ S.active.data=emptyData(); rerender(); toast('Form temizlendi'); }
+function toast(msg){ try{ const t=document.createElement('div'); t.textContent=msg; t.style.cssText='position:fixed;left:50%;top:20px;transform:translateX(-50%);background:#15182b;color:#fff;padding:10px 18px;border-radius:30px;font-size:13px;font-weight:600;z-index:200;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .2s'; document.body.appendChild(t); requestAnimationFrame(()=>t.style.opacity='1'); setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),250); },1800);}catch(e){} }
+function download(){ if(S.active.paid){window.print();return;} document.getElementById('app').insertAdjacentHTML('beforeend',paymentModal()); }
+function closePay(){ const m=document.getElementById('payModal'); if(m)m.remove(); }
+function processPay(){
+  const body=document.getElementById('payBody');
+  body.innerHTML='<div style="padding:40px 0;text-align:center"><div class="spin"></div><div style="font-size:14px;color:#555">Ödeme işleniyor…</div></div>';
+  setTimeout(()=>{
+    const acc = S.user ? '' : '<div style="font-size:11.5px;color:#998;margin-top:14px;line-height:1.5">İsteğe bağlı: <span onclick="closePay();go(\'auth\')" style="color:#8a6d1f;font-weight:700;cursor:pointer;text-decoration:underline">hesap oluşturup</span> CV\'lerinizi kaydedebilirsiniz.</div>';
+    body.innerHTML='<div style="padding:36px 22px 30px;text-align:center"><div style="width:54px;height:54px;border-radius:50%;background:#e7f6ec;color:#1f9d55;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">✓</div><div style="font-family:var(--serif);font-size:20px;font-weight:600">Ödeme Başarılı</div><div style="font-size:13px;color:#777;margin-top:4px">CV\u2019niz indirmeye hazır.</div>'+acc+'</div>';
+    S.active.paid=true;
+    setTimeout(()=>{ closePay(); rerender(); setTimeout(()=>{ if(S.view==='editor') window.print(); },300); },1100);
+  },1500);
+}
+
+/* ====================== RENDER ====================== */
+function viewHTML(){
+  const v=S.view;
+  return v==='landing'?landing(): v==='guide'?guide(): v==='article'?article(): v==='legal'?legalPage(): v==='auth'?auth(): v==='dashboard'?dashboard(): v==='editor'?editor(): landing();
+}
+function render(top){
+  document.getElementById('app').innerHTML = viewHTML();
+  setMeta();
+  if(['landing','guide','article','legal'].indexOf(S.view)>=0 && S.cookieConsent===null){
+    document.getElementById('app').insertAdjacentHTML('beforeend', cookieBanner());
+  }
+  try{ window.onscroll = (S.view==='article') ? updateReadBar : null; }catch(e){}
+  if(top) window.scrollTo(0,0);
+  updateReadBar();
+}
+function rerender(){ const y=window.scrollY||window.pageYOffset||0; render(false); window.scrollTo(0,y); }
+
+render(true);
+</script>
+</body>
+</html>
