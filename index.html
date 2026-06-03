@@ -51,7 +51,8 @@
   .legal ul{margin:0 0 12px 20px}
   .legal li{margin-bottom:6px}
   .legal .ph{background:#fff6df;border:1px solid #ecd9a0;border-radius:4px;padding:0 5px;font-weight:600;color:#8a6d1f}
-  @media print{ body *{visibility:hidden} #zoomWrap{transform:none!important} #printArea,#printArea *{visibility:visible} #printArea{position:fixed;inset:0;margin:0;box-shadow:none} @page{size:A4;margin:0} }
+  .cvhl{background:rgba(199,154,63,.16);box-shadow:0 0 0 4px rgba(199,154,63,.16);border-radius:5px;transition:background .25s,box-shadow .25s}
+  @media print{ body *{visibility:hidden} #zoomWrap{transform:none!important} .cvhl{background:none!important;box-shadow:none!important} #printArea,#printArea *{visibility:visible} #printArea{position:fixed;inset:0;margin:0;box-shadow:none} @page{size:A4;margin:0} }
   @media(max-width:760px){ .row2{flex-direction:column!important} .hero-art{display:none} .split-art{display:none} .stick{position:static!important} }
 </style>
 </head>
@@ -60,7 +61,7 @@
 
 <script>
 /* ====================== DURUM ====================== */
-const S = { view:'landing', user:null, users:{}, cvs:[], active:null, showAll:false, tplFilter:'all', hideAnchor:false, articleId:null, cookieConsent:null, faqOpen:null, guideQuery:'', zoom:1 };
+const S = { view:'landing', user:null, users:{}, cvs:[], active:null, showAll:false, tplFilter:'all', hideAnchor:false, articleId:null, cookieConsent:null, faqOpen:null, guideQuery:'', zoom:1, focus:null };
 let authMode='signup';
 const uid = () => Math.random().toString(36).slice(2,9);
 const esc = s => (s==null?'':(''+s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -72,6 +73,7 @@ const SAMPLE = {
   photo:"",
   fullName:"Elif Yıldırım", title:"Kıdemli Ürün Tasarımcısı",
   email:"elif@ornek.com", phone:"+90 532 000 00 00", location:"İstanbul", website:"elif.design",
+  linkedin:"linkedin.com/in/elifyildirim", birthDate:"05.1992", nationality:"T.C.", maritalStatus:"Evli", driverLicense:"B", military:"",
   summary:"Kullanıcı odaklı dijital ürünler tasarlayan, 7 yıl deneyimli tasarımcı. Fikirden lansmana tüm süreçte takımları yönlendirir.",
   experience:[
     {role:"Kıdemli Ürün Tasarımcısı",company:"Akva Teknoloji",period:"2021 — Günümüz",desc:"Mobil uygulamayı yeniden tasarlayarak dönüşümü %34 artırdı. 5 kişilik ekibi yönetti."},
@@ -96,7 +98,7 @@ const SAMPLE_MINI = {
   skills:"Figma, Araştırma, Prototip, HTML/CSS",
   languages:"Türkçe, İngilizce"
 };
-const emptyData = () => ({photo:"",fullName:"",title:"",email:"",phone:"",location:"",website:"",summary:"",
+const emptyData = () => ({photo:"",fullName:"",title:"",email:"",phone:"",location:"",website:"",linkedin:"",birthDate:"",nationality:"",maritalStatus:"",driverLicense:"",military:"",summary:"",
   experience:[{role:"",company:"",period:"",desc:""}], education:[{school:"",degree:"",period:""}], projects:[], certificates:[], skills:"", languages:"", accent:""});
 
 /* ====================== TEMALAR (renk) ======================
@@ -229,23 +231,27 @@ function articleCard(a){ return `<a class="card" href="/rehber/${a.id}/" style="
   <div style="font-size:12.5px;color:#8a6d1f;font-weight:700;margin-top:10px">Oku →</div></div></a>`; }
 
 /* ====================== ORTAK PARÇALAR ====================== */
-const nm=P=>esc(P.d.fullName)||'Ad Soyad';
-const ti=P=>esc(P.d.title)||'Ünvan';
+const FK={'Deneyim':'experience','Eğitim':'education','Profil':'summary','Hakkımda':'summary','Yetenekler':'skills','YETENEKLER':'skills','Diller':'languages','DİLLER':'languages','Projeler':'projects','Sertifikalar':'certificates','İLETİŞİM':'contact','İletişim':'contact','__name':'fullName','__title':'title'};
+function hlAttr(t){ return (S.focus && FK[t]===S.focus) ? ' class="cvhl"' : ''; }
+function setFocus(k){ S.focus=k; livePreview(); }
+function blurFocus(){ if(S.focus!==null){ S.focus=null; livePreview(); } }
+const nm=P=>`<span${hlAttr('__name')}>${esc(P.d.fullName)||'Ad Soyad'}</span>`;
+const ti=P=>`<span${hlAttr('__title')}>${esc(P.d.title)||'Ünvan'}</span>`;
 const sideRule=()=>`<div style="height:1px;background:rgba(255,255,255,.18);margin:16px 0"></div>`;
-const sideHead=(t,C)=>`<div style="font-size:10px;letter-spacing:2px;color:${C.onDarkHead};font-weight:700;margin-bottom:8px">${t}</div>`;
-const bodyHead=(t,C)=>`<div style="font-family:var(--serif);font-size:15px;font-weight:600;color:${C.accent};margin-bottom:8px;border-bottom:2px solid ${C.accent};padding-bottom:3px;display:inline-block">${t}</div>`;
-const bandHead=(t,C)=>`<div style="display:inline-block;background:${C.soft};color:${C.accent};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:10px">${t}</div>`;
-const plainHead=(t,C)=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><span style="width:10px;height:10px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${C.accent}">${t}</span></div>`;
-const miniHead=(t,C)=>`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent};border-bottom:1.5px solid ${C.accent};padding-bottom:2px;margin-bottom:8px">${t}</div>`;
-const classicHead=(t,C)=>`<div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid ${C.line};padding-bottom:3px;margin:14px 0 10px;color:${C.accent}">${t}</div>`;
-const elegHead=(t,C)=>`<div style="text-align:center;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:${C.accent};font-family:var(--sans);font-weight:600;margin:16px 0 12px">${t}</div>`;
-const barHead=(t,C)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="width:18px;height:3px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent}">${t}</span></div>`;
-const minHead2=(t)=>`<div style="font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:#777;font-weight:600;margin:4px 0 11px">${t}</div>`;
+const sideHead=(t,C)=>`<div${hlAttr(t)} style="font-size:10px;letter-spacing:2px;color:${C.onDarkHead};font-weight:700;margin-bottom:8px">${t}</div>`;
+const bodyHead=(t,C)=>`<div${hlAttr(t)} style="font-family:var(--serif);font-size:15px;font-weight:600;color:${C.accent};margin-bottom:8px;border-bottom:2px solid ${C.accent};padding-bottom:3px;display:inline-block">${t}</div>`;
+const bandHead=(t,C)=>`<div${hlAttr(t)} style="display:inline-block;background:${C.soft};color:${C.accent};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:6px;margin-bottom:10px">${t}</div>`;
+const plainHead=(t,C)=>`<div${hlAttr(t)} style="display:flex;align-items:center;gap:7px;margin-bottom:10px"><span style="width:10px;height:10px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${C.accent}">${t}</span></div>`;
+const miniHead=(t,C)=>`<div${hlAttr(t)} style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent};border-bottom:1.5px solid ${C.accent};padding-bottom:2px;margin-bottom:8px">${t}</div>`;
+const classicHead=(t,C)=>`<div${hlAttr(t)} style="font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:600;border-bottom:1px solid ${C.line};padding-bottom:3px;margin:14px 0 10px;color:${C.accent}">${t}</div>`;
+const elegHead=(t,C)=>`<div${hlAttr(t)} style="text-align:center;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:${C.accent};font-family:var(--sans);font-weight:600;margin:16px 0 12px">${t}</div>`;
+const barHead=(t,C)=>`<div${hlAttr(t)} style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="width:18px;height:3px;background:${C.accent}"></span><span style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${C.accent}">${t}</span></div>`;
+const minHead2=(t)=>`<div${hlAttr(t)} style="font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:#777;font-weight:600;margin:4px 0 11px">${t}</div>`;
 
 /* ---- FOTOĞRAF / AVATAR ---- */
 function initials(name){ name=(name||'').trim(); if(!name) return 'CV'; const p=name.split(/\s+/); return (((p[0]||'')[0]||'')+((p[1]||'')[0]||'')).toUpperCase(); }
 function avatar(name,bg,fg){
-  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='${bg}'/><text x='50%' y='50%' dy='.35em' text-anchor='middle' font-family='DM Sans,sans-serif' font-size='46' font-weight='700' fill='${fg}'>${initials(name)}</text></svg>`;
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><rect width='120' height='120' fill='${bg}'/><circle cx='60' cy='47' r='21' fill='${fg}'/><path d='M24 104 c0 -22 16 -34 36 -34 s36 12 36 34 z' fill='${fg}'/></svg>`;
   return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
 }
 function photoEl(P,C,size,o){ o=o||{};
@@ -434,7 +440,10 @@ function renderCV(id, d){
   if(d.accent){ C.accent=d.accent; C.soft=hexLighten(d.accent,.9); }
   const has=v=>v&&(''+v).trim();
   const P={ d, has,
-    cont:[d.email,d.phone,d.location,d.website].filter(has),
+    cont:[d.email,d.phone,d.location,d.website,d.linkedin,
+      d.birthDate&&('Doğum: '+d.birthDate), d.nationality&&('Uyruk: '+d.nationality),
+      d.maritalStatus&&('Medeni durum: '+d.maritalStatus), d.military&&('Askerlik: '+d.military),
+      d.driverLicense&&('Ehliyet: '+d.driverLicense)].filter(has),
     exps:(d.experience||[]).filter(e=>has(e.role)||has(e.company)),
     edus:(d.education||[]).filter(e=>has(e.school)),
     projs:(d.projects||[]).filter(p=>has(p.name)),
@@ -798,20 +807,21 @@ function dashboard(){
 function editor(){
   const c=S.active, d=c.data, price=c.paid?0:nextPrice();
   const tplName=TEMPLATES_MAP[c.template]?TEMPLATES_MAP[c.template].name:'Seç';
+  const F=k=>` onfocus="setFocus('${k}')" onblur="blurFocus()"`;
   const expRows=d.experience.map((e,i)=>`<div style="background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">
-    <div style="display:flex;gap:8px"><input class="inp" placeholder="Pozisyon" value="${esc(e.role)}" oninput="upd('experience',${i},'role',this.value)"><input class="inp" placeholder="Şirket" value="${esc(e.company)}" oninput="upd('experience',${i},'company',this.value)"></div>
-    <input class="inp" style="margin-top:8px" placeholder="2022 — Günümüz" value="${esc(e.period)}" oninput="upd('experience',${i},'period',this.value)">
-    <textarea class="inp" style="margin-top:8px;min-height:48px" placeholder="Sorumluluklar ve başarılar…" oninput="upd('experience',${i},'desc',this.value)">${esc(e.desc)}</textarea>
+    <div style="display:flex;gap:8px"><input class="inp" placeholder="Pozisyon" value="${esc(e.role)}" ${F('experience')} oninput="upd('experience',${i},'role',this.value)"><input class="inp" placeholder="Şirket" value="${esc(e.company)}" ${F('experience')} oninput="upd('experience',${i},'company',this.value)"></div>
+    <input class="inp" style="margin-top:8px" placeholder="2022 — Günümüz" value="${esc(e.period)}" ${F('experience')} oninput="upd('experience',${i},'period',this.value)">
+    <textarea class="inp" style="margin-top:8px;min-height:48px" placeholder="Sorumluluklar ve başarılar…" ${F('experience')} oninput="upd('experience',${i},'desc',this.value)">${esc(e.desc)}</textarea>
     ${rowCtrls('experience',i,d.experience.length)}
   </div>`).join('');
   const eduRows=d.education.map((e,i)=>`<div style="background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">
-    <input class="inp" placeholder="Okul / Üniversite" value="${esc(e.school)}" oninput="upd('education',${i},'school',this.value)">
-    <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Bölüm" value="${esc(e.degree)}" oninput="upd('education',${i},'degree',this.value)"><input class="inp" placeholder="2018 — 2022" value="${esc(e.period)}" oninput="upd('education',${i},'period',this.value)"></div>
+    <input class="inp" placeholder="Okul / Üniversite" value="${esc(e.school)}" ${F('education')} oninput="upd('education',${i},'school',this.value)">
+    <div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Bölüm" value="${esc(e.degree)}" ${F('education')} oninput="upd('education',${i},'degree',this.value)"><input class="inp" placeholder="2018 — 2022" value="${esc(e.period)}" ${F('education')} oninput="upd('education',${i},'period',this.value)"></div>
     ${rowCtrls('education',i,d.education.length)}
   </div>`).join('');
   const box='background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px';
-  const projRows=d.projects.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Proje adı" value="${esc(e.name)}" oninput="upd('projects',${i},'name',this.value)"><textarea class="inp" style="margin-top:8px;min-height:44px" placeholder="Kısa açıklama" oninput="upd('projects',${i},'desc',this.value)">${esc(e.desc)}</textarea>${rowCtrls('projects',i,d.projects.length)}</div>`).join('');
-  const certRows=d.certificates.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Sertifika adı" value="${esc(e.name)}" oninput="upd('certificates',${i},'name',this.value)"><div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Veren kurum" value="${esc(e.issuer)}" oninput="upd('certificates',${i},'issuer',this.value)"><input class="inp" placeholder="Yıl" value="${esc(e.year)}" oninput="upd('certificates',${i},'year',this.value)"></div>${rowCtrls('certificates',i,d.certificates.length)}</div>`).join('');
+  const projRows=d.projects.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Proje adı" value="${esc(e.name)}" ${F('projects')} oninput="upd('projects',${i},'name',this.value)"><textarea class="inp" style="margin-top:8px;min-height:44px" placeholder="Kısa açıklama" ${F('projects')} oninput="upd('projects',${i},'desc',this.value)">${esc(e.desc)}</textarea>${rowCtrls('projects',i,d.projects.length)}</div>`).join('');
+  const certRows=d.certificates.map((e,i)=>`<div style="${box}"><input class="inp" placeholder="Sertifika adı" value="${esc(e.name)}" ${F('certificates')} oninput="upd('certificates',${i},'name',this.value)"><div style="display:flex;gap:8px;margin-top:8px"><input class="inp" placeholder="Veren kurum" value="${esc(e.issuer)}" ${F('certificates')} oninput="upd('certificates',${i},'issuer',this.value)"><input class="inp" placeholder="Yıl" value="${esc(e.year)}" ${F('certificates')} oninput="upd('certificates',${i},'year',this.value)"></div>${rowCtrls('certificates',i,d.certificates.length)}</div>`).join('');
   const score=cvScore(d);
   const accents=['#22416b','#7e2738','#1f6f5c','#2c303b','#8f6b1e','#3a3f8a','#0f6e6e','#9c4a23'];
   const accentSwatches=accents.map(a=>`<span onclick="setAccent('${a}')" style="width:24px;height:24px;border-radius:50%;background:${a};cursor:pointer;display:inline-block;box-shadow:${d.accent===a?'0 0 0 2px #fff,0 0 0 4px '+a:'0 0 0 1px rgba(0,0,0,.12)'}"></span>`).join('')+`<span onclick="setAccent('')" style="font-size:12px;color:#8a6d1f;cursor:pointer;font-weight:600;margin-left:4px">Varsayılan</span>`;
@@ -819,12 +829,12 @@ function editor(){
     <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;gap:8px;flex-wrap:wrap">
       <button class="ghost" style="padding:8px 12px;font-size:13px" onclick="${S.user?"go('dashboard')":"go('landing')"}">${S.user?'← Panel':'← Ana Sayfa'}</button>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button class="ghost" style="padding:8px 12px;font-size:12.5px" onclick="openTplPicker()">▤ ${tplName} ▾</button>
-        <button class="gold" style="padding:9px 16px;font-size:13px" onclick="download()">${c.paid?'⤓ PDF İndir':'🔒 '+price+" TL'ye İndir"}</button>
+        <button class="gold" style="padding:9px 18px;font-size:13px" onclick="download()">⤓ Dışa Aktar</button>
       </div>
     </div>
     <div class="row2" style="display:flex;max-width:1300px;margin:0 auto;gap:20px;padding:20px;align-items:flex-start">
       <div class="card" style="flex:1 1 360px;min-width:280px;padding:20px">
+        <button onclick="openTplPicker()" style="width:100%;border:1.5px solid var(--gold);background:#fff;color:#8a6d1f;border-radius:10px;padding:11px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px">▤ Şablon: ${tplName} <span style="color:#998;font-weight:600">· Değiştir ▾</span></button>
         <div style="background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#5a5346">CV Tamamlanma</span><span id="scorePct" style="font-size:13px;font-weight:800;color:#8a6d1f">%${score}</span></div>
           <div style="height:8px;background:#e7e1d2;border-radius:6px;overflow:hidden"><div id="scoreFill" style="height:100%;width:${score}%;background:linear-gradient(90deg,#c79a3f,#8f6b1e);transition:width .3s"></div></div>
@@ -840,10 +850,16 @@ function editor(){
           </div>
         </div>
         <div style="margin-bottom:14px"><label class="label">Vurgu Rengi (isteğe bağlı)</label><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${accentSwatches}</div></div>
-        ${[['fullName','Ad Soyad','Ahmet Demir'],['title','Ünvan','Yazılım Geliştirici']].map(f=>`<div style="margin-bottom:11px"><label class="label">${f[1]}</label><input class="inp" value="${esc(d[f[0]])}" oninput="updField('${f[0]}',this.value)" placeholder="${f[2]}"></div>`).join('')}
-        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">E-posta</label><input class="inp" value="${esc(d.email)}" oninput="updField('email',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Telefon</label><input class="inp" value="${esc(d.phone)}" oninput="updField('phone',this.value)"></div></div>
-        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">Konum</label><input class="inp" value="${esc(d.location)}" oninput="updField('location',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Web / LinkedIn</label><input class="inp" value="${esc(d.website)}" oninput="updField('website',this.value)"></div></div>
-        <div style="margin-bottom:11px"><label class="label">Hakkımda / Özet</label><textarea class="inp" oninput="updField('summary',this.value)" placeholder="Kendinizi 2-3 cümleyle özetleyin.">${esc(d.summary)}</textarea></div>
+        ${[['fullName','Ad Soyad','Ahmet Demir'],['title','Ünvan','Yazılım Geliştirici']].map(f=>`<div style="margin-bottom:11px"><label class="label">${f[1]}</label><input class="inp" value="${esc(d[f[0]])}" ${F(f[0])} oninput="updField('${f[0]}',this.value)" placeholder="${f[2]}"></div>`).join('')}
+        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">E-posta</label><input class="inp" value="${esc(d.email)}" ${F('contact')} oninput="updField('email',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Telefon</label><input class="inp" value="${esc(d.phone)}" ${F('contact')} oninput="updField('phone',this.value)"></div></div>
+        <div style="display:flex;gap:10px"><div style="margin-bottom:11px;flex:1"><label class="label">Konum</label><input class="inp" ${F('contact')} value="${esc(d.location)}" oninput="updField('location',this.value)"></div><div style="margin-bottom:11px;flex:1"><label class="label">Web / Portfolyo</label><input class="inp" ${F('contact')} value="${esc(d.website)}" oninput="updField('website',this.value)"></div></div>
+        <div style="margin-bottom:11px"><label class="label">LinkedIn</label><input class="inp" ${F('contact')} value="${esc(d.linkedin)}" oninput="updField('linkedin',this.value)" placeholder="linkedin.com/in/kullanici"></div>
+        <details style="margin-bottom:11px"><summary style="cursor:pointer;font-size:12.5px;color:#8a6d1f;font-weight:700;margin-bottom:6px">+ Ek kişisel bilgiler (isteğe bağlı)</summary>
+          <div style="display:flex;gap:10px;margin-top:8px"><div style="flex:1;margin-bottom:11px"><label class="label">Doğum Tarihi</label><input class="inp" ${F('contact')} value="${esc(d.birthDate)}" oninput="updField('birthDate',this.value)" placeholder="05.1992"></div><div style="flex:1;margin-bottom:11px"><label class="label">Uyruk</label><input class="inp" ${F('contact')} value="${esc(d.nationality)}" oninput="updField('nationality',this.value)" placeholder="T.C."></div></div>
+          <div style="display:flex;gap:10px"><div style="flex:1;margin-bottom:11px"><label class="label">Medeni Durum</label><input class="inp" ${F('contact')} value="${esc(d.maritalStatus)}" oninput="updField('maritalStatus',this.value)" placeholder="Bekâr / Evli"></div><div style="flex:1;margin-bottom:11px"><label class="label">Ehliyet</label><input class="inp" ${F('contact')} value="${esc(d.driverLicense)}" oninput="updField('driverLicense',this.value)" placeholder="B"></div></div>
+          <div style="margin-bottom:4px"><label class="label">Askerlik Durumu</label><input class="inp" ${F('contact')} value="${esc(d.military)}" oninput="updField('military',this.value)" placeholder="Yapıldı / Tecilli / Muaf"></div>
+        </details>
+        <div style="margin-bottom:11px"><label class="label">Hakkımda / Özet</label><textarea class="inp" ${F('summary')} oninput="updField('summary',this.value)" placeholder="Kendinizi 2-3 cümleyle özetleyin.">${esc(d.summary)}</textarea></div>
         <div style="height:1px;background:var(--line);margin:18px 0"></div>
         <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">İş Deneyimi</h3>${expRows}
         <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('experience')">+ Deneyim Ekle</button>
@@ -858,8 +874,8 @@ function editor(){
         <button style="border:1.5px dashed var(--gold);color:#8a6d1f;background:none;padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600" onclick="addRow('certificates')">+ Sertifika Ekle</button>
         <div style="height:1px;background:var(--line);margin:18px 0"></div>
         <h3 style="font-family:var(--serif);font-size:16px;margin-bottom:10px">Yetenekler & Diller</h3>
-        <div style="margin-bottom:11px"><label class="label">Yetenekler (virgülle ayır)</label><textarea class="inp" style="min-height:46px" oninput="updField('skills',this.value)" placeholder="JavaScript, React, Takım Yönetimi">${esc(d.skills)}</textarea></div>
-        <div style="margin-bottom:11px"><label class="label">Diller</label><input class="inp" value="${esc(d.languages)}" oninput="updField('languages',this.value)" placeholder="Türkçe (Ana dil), İngilizce (İleri)"></div>
+        <div style="margin-bottom:11px"><label class="label">Yetenekler (virgülle ayır)</label><textarea class="inp" style="min-height:46px" ${F('skills')} oninput="updField('skills',this.value)" placeholder="JavaScript, React, Takım Yönetimi">${esc(d.skills)}</textarea></div>
+        <div style="margin-bottom:11px"><label class="label">Diller</label><input class="inp" value="${esc(d.languages)}" ${F('languages')} oninput="updField('languages',this.value)" placeholder="Türkçe (Ana dil), İngilizce (İleri)"></div>
       </div>
       <div class="stick" style="flex:1 1 420px;min-width:300px;position:sticky;top:72px">
         <div style="font-size:12px;color:#998;margin-bottom:8px;display:flex;align-items:center;gap:6px">👁 Canlı Önizleme
@@ -868,10 +884,10 @@ function editor(){
             <button onclick="zoomReset()" style="border:1px solid var(--line);background:#fff;border-radius:6px;padding:0 8px;height:26px;font-size:11px;cursor:pointer">%${Math.round((S.zoom||1)*100)}</button>
             <button onclick="zoomBy(0.1)" style="border:1px solid var(--line);background:#fff;border-radius:6px;width:26px;height:26px;font-size:15px;cursor:pointer">+</button>
           </span>
-          ${c.paid?'':`<span style="color:#8a6d1f;font-weight:600;margin-left:8px">İndirmek için ${price} TL</span>`}
+          ${c.paid?'':`<span style="color:#8a6d1f;font-weight:600;margin-left:8px;font-size:11px">${price} TL · dışa aktarımda</span>`}
         </div>
         <div style="position:relative;overflow:auto"><div id="zoomWrap" style="transform:scale(${S.zoom||1});transform-origin:top center"><div class="a4" id="printArea">${renderCV(c.template,d)}</div></div>
-        ${c.paid?'':`<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(transparent,rgba(255,255,255,.96));display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px"><button class="gold" onclick="download()">🔒 ${price} TL ile Kilidi Aç & İndir</button></div>`}</div>
+        ${c.paid?'':`<div style="position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(transparent,rgba(255,255,255,.96));display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px"><button class="gold" onclick="download()">⤓ Dışa Aktar</button></div>`}</div>
       </div>
     </div>
   </div>`;
@@ -904,6 +920,7 @@ function paymentModal(){
         <div style="font-size:12px;color:#cfcfd8">${paidCount()===0?"İlk CV'niz — özel başlangıç fiyatı":'CV indirme ve PDF dışa aktarma'}</div>
       </div>
       <div id="payBody" style="padding:22px">
+        <div style="background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px"><span style="color:#6b6354">${S.active&&TEMPLATES_MAP[S.active.template]?TEMPLATES_MAP[S.active.template].name:'CV'} · PDF (A4)</span><b style="color:var(--ink)">${price} TL</b></div>
         <div style="margin-bottom:12px"><label class="label">💳 Kart Numarası</label><input class="inp" placeholder="0000 0000 0000 0000" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim()"></div>
         <div style="margin-bottom:12px"><label class="label">Kart Üzerindeki İsim</label><input class="inp" placeholder="AD SOYAD"></div>
         <div style="display:flex;gap:12px"><div style="flex:1;margin-bottom:12px"><label class="label">Son Kullanma</label><input class="inp" placeholder="AA/YY"></div><div style="flex:1;margin-bottom:12px"><label class="label">CVV</label><input class="inp" placeholder="123"></div></div>
