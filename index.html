@@ -7,9 +7,13 @@
 <meta name="description" id="metaDesc" content="Dakikalar içinde profesyonel, fotoğraflı CV oluştur. 50+ şablon, canlı önizleme ve PDF indirme.">
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://cvusta.com/">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cvusta.com/">
 <meta property="og:site_name" content="CVUsta">
+<meta property="og:image" content="https://cvusta.com/logo-full.png">
+<meta name="twitter:image" content="https://cvusta.com/logo-full.png">
 <meta property="og:title" id="ogTitle" content="CVUsta — Ücretsiz Online CV Oluşturucu">
 <meta property="og:description" id="ogDesc" content="Dakikalar içinde profesyonel, fotoğraflı CV oluştur.">
 <meta name="twitter:card" content="summary_large_image">
@@ -452,7 +456,7 @@ function renderCV(id, d){
   return (LAYOUTS[t.layout]||LAYOUTS.modern)(P,C);
 }
 
-const LOGO = (light)=>`<div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ink)">CV</div><span style="font-family:var(--serif);font-size:21px;font-weight:600;color:${light?'#fff':'var(--ink)'};letter-spacing:-.5px">CV<span style="color:var(--gold)">Usta</span></span></div>`;
+const LOGO = (light)=>`<div style="display:flex;align-items:center;gap:9px"><img src="/logo-mark.png" alt="CVUsta" style="height:34px;width:auto;display:block"><span style="font-family:var(--serif);font-size:21px;font-weight:600;color:${light?'#fff':'var(--ink)'};letter-spacing:-.5px">CV<span style="color:var(--gold)">Usta</span></span></div>`;
 
 /* ====================== ŞABLON KÜÇÜK GÖRSELİ ====================== */
 function thumb(t, onclick, selectable){
@@ -1032,6 +1036,9 @@ function rerender(){ const y=window.scrollY||window.pageYOffset||0; render(false
     var h=(location.hash||'').replace(/^#/,'');
     var legal=['gizlilik','mesafeli','iade','hakkimizda','iletisim'];
     if(h==='olustur'){ newCV(); return; }
+    if(h==='giris'||h==='login'){ authMode='login'; S.view='auth'; render(true); return; }
+    if(h==='kayit'||h==='register'){ authMode='signup'; S.view='auth'; render(true); return; }
+    if(h==='panel'){ if(S.user){ S.view='dashboard'; } else { authMode='login'; S.view='auth'; } render(true); return; }
     if(legal.indexOf(h)>=0){ S.legalKey=h; S.view='legal'; render(true); return; }
   }catch(e){}
   render(true);
