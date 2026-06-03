@@ -221,12 +221,12 @@ const ARTICLES=[
    "Görüşmede eksik bıraktığınızı düşündüğünüz bir noktayı da nazikçe ekleyebilirsiniz. Bu, hem dikkatinizi hem de iletişim becerinizi gösterir."]},
 ];
 const ARTICLES_MAP={}; ARTICLES.forEach(a=>ARTICLES_MAP[a.id]=a);
-function articleCard(a){ return `<div class="card" onclick="openArticle('${a.id}')" style="cursor:pointer;overflow:hidden;text-align:left">
+function articleCard(a){ return `<a class="card" href="/rehber/${a.id}/" style="display:block;cursor:pointer;overflow:hidden;text-align:left;text-decoration:none;color:inherit">
   <div style="height:90px;background:linear-gradient(135deg,#22416b,#15182b);display:flex;align-items:center;justify-content:center;color:#c79a3f;font-family:var(--serif);font-size:30px">✦</div>
   <div style="padding:16px"><div style="font-size:11px;color:#a99a6e;font-weight:600;margin-bottom:6px">REHBER · ${a.read} okuma</div>
   <h3 style="font-size:15.5px;font-weight:700;line-height:1.3;color:var(--ink)">${a.title}</h3>
   <p style="font-size:12.5px;color:#6b6354;margin-top:8px;line-height:1.5">${a.excerpt}</p>
-  <div style="font-size:12.5px;color:#8a6d1f;font-weight:700;margin-top:10px">Oku →</div></div></div>`; }
+  <div style="font-size:12.5px;color:#8a6d1f;font-weight:700;margin-top:10px">Oku →</div></div></a>`; }
 
 /* ====================== ORTAK PARÇALAR ====================== */
 const nm=P=>esc(P.d.fullName)||'Ad Soyad';
@@ -461,7 +461,7 @@ const LEGAL = {
   gizlilik:{ title:"Gizlilik ve Çerez Politikası", updated:"01.06.2026", body:`<div class="legal">
     <p>Bu politika, CVUsta ("Site") üzerinden toplanan kişisel verilerin nasıl işlendiğini, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve ilgili mevzuat kapsamında açıklamak için hazırlanmıştır.</p>
     <h3>1. Veri Sorumlusu</h3>
-    <p>Veri sorumlusu ${PH('ŞİRKET / TİCARET UNVANI')}, adres ${PH('AÇIK ADRES')}, e-posta ${PH('E-POSTA')}, telefon ${PH('TELEFON')}.</p>
+    <p>Veri sorumlusu CVUsta'dır. İletişim: <b>cvusta.com@gmail.com</b>.</p>
     <h3>2. Toplanan Veriler</h3>
     <ul>
       <li>Hesap bilgileri: ad-soyad, e-posta adresi.</li>
@@ -477,7 +477,7 @@ const LEGAL = {
     <p>Sitede reklamlar Google AdSense aracılığıyla gösterilebilir. Üçüncü taraf sağlayıcılar (Google dahil), reklam sunumu sonucunda kullanıcıların tarayıcılarına çerez yerleştirebilir veya bunları okuyabilir; web işaretçileri ya da IP adresleri aracılığıyla bilgi toplayabilir. Google ve iş ortakları; çerezleri, kullanıcıların bu siteye ve/veya internetteki diğer sitelere yaptığı önceki ziyaretlere dayalı reklam sunmak için kullanır.</p>
     <p>Kullanıcılar kişiselleştirilmiş reklamları, Google Reklam Ayarları (<b>google.com/settings/ads</b>) üzerinden devre dışı bırakabilir. Üçüncü taraf sağlayıcıların çerez kullanımını ise <b>aboutads.info</b> adresinden yönetebilirsiniz. Avrupa Ekonomik Alanı'ndaki kullanıcılar için kişiselleştirilmiş reklam öncesinde açık rıza alınır.</p>
     <h3>6. KVKK Kapsamındaki Haklarınız</h3>
-    <p>KVKK m.11 uyarınca; verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, düzeltilmesini veya silinmesini isteme, işlemeye itiraz etme haklarına sahipsiniz. Taleplerinizi ${PH('E-POSTA')} adresine iletebilirsiniz.</p>
+    <p>KVKK m.11 uyarınca; verilerinizin işlenip işlenmediğini öğrenme, bilgi talep etme, düzeltilmesini veya silinmesini isteme, işlemeye itiraz etme haklarına sahipsiniz. Taleplerinizi <b>cvusta.com@gmail.com</b> adresine iletebilirsiniz.</p>
     <h3>7. Saklama ve Güvenlik</h3>
     <p>Veriler, işleme amaçları için gerekli süre boyunca ve yasal saklama süreleri kadar tutulur. Verilerin korunması için makul teknik ve idari tedbirler alınır.</p>
     <h3>8. Değişiklikler</h3>
@@ -486,13 +486,13 @@ const LEGAL = {
 
   mesafeli:{ title:"Mesafeli Satış Sözleşmesi", updated:"01.06.2026", body:`<div class="legal">
     <h3>1. Taraflar</h3>
-    <p><b>Satıcı:</b> ${PH('ŞİRKET / TİCARET UNVANI')}, ${PH('ADRES')}, VKN ${PH('VERGİ NO')}, e-posta ${PH('E-POSTA')}, telefon ${PH('TELEFON')}.<br><b>Alıcı:</b> Siteye üye olan ve sipariş veren tüketici.</p>
+    <p><b>Satıcı:</b> CVUsta, e-posta <b>cvusta.com@gmail.com</b>.<br><b>Alıcı:</b> Siteye üye olan ve sipariş veren tüketici.</p>
     <h3>2. Sözleşmenin Konusu</h3>
     <p>İşbu sözleşme, Alıcı'nın Site üzerinden elektronik ortamda oluşturduğu CV'nin PDF olarak indirilmesi hizmetinin (dijital ürün) satışına ilişkin tarafların hak ve yükümlülüklerini düzenler.</p>
     <h3>3. Ürün ve Bedel</h3>
     <p>Hizmet bedeli, ilk CV için 10 TL, sonraki her CV için 50 TL'dir (tüm vergiler dahildir). Güncel fiyat, ödeme ekranında Alıcı'ya açıkça gösterilir.</p>
     <h3>4. Ödeme</h3>
-    <p>Ödemeler, anlaşmalı ödeme kuruluşu ${PH('ÖDEME SAĞLAYICI / iyzico')} altyapısı üzerinden güvenli şekilde alınır. Kart bilgileri Satıcı tarafından saklanmaz.</p>
+    <p>Ödemeler, anlaşmalı ödeme kuruluşu iyzico altyapısı üzerinden güvenli şekilde alınır. Kart bilgileri Satıcı tarafından saklanmaz.</p>
     <h3>5. Teslimat</h3>
     <p>Dijital ürün, ödemenin onaylanmasının ardından anında elektronik ortamda teslim edilir; Alıcı CV'sini PDF olarak indirebilir. Ayrı bir fiziki teslimat yapılmaz.</p>
     <h3>6. Cayma Hakkı</h3>
@@ -507,24 +507,20 @@ const LEGAL = {
     <h3>İade ve Cayma</h3>
     <p>Dijital ürün, ödeme sonrası anında ifa edildiğinden, Mesafeli Sözleşmeler Yönetmeliği m.15 gereği cayma ve iade hakkı bulunmamaktadır. Sipariş onayı sırasında bu durum Alıcı'ya açıkça bildirilir ve onaylanır.</p>
     <h3>Teknik Sorunlar</h3>
-    <p>Ödemeniz alındığı halde teknik bir nedenle CV'nizi indiremediyseniz, ${PH('E-POSTA')} adresinden bizimle iletişime geçin. Sorunu en kısa sürede çözüyor, çözülemediği durumda ödemenizi iade ediyoruz.</p>
+    <p>Ödemeniz alındığı halde teknik bir nedenle CV'nizi indiremediyseniz, <b>cvusta.com@gmail.com</b> adresinden bizimle iletişime geçin. Sorunu en kısa sürede çözüyor, çözülemediği durumda ödemenizi iade ediyoruz.</p>
   </div>`},
 
   hakkimizda:{ title:"Hakkımızda", updated:"01.06.2026", body:`<div class="legal">
     <p>CVUsta, iş arayan herkesin dakikalar içinde profesyonel ve modern bir CV hazırlayabilmesi için kurulmuş bir çevrimiçi CV oluşturma platformudur.</p>
     <p>50'den fazla şablon, canlı önizleme ve tek tıkla PDF indirme özellikleriyle; tasarım bilgisi gerektirmeden, herkesin işe alımda öne çıkmasını amaçlıyoruz. Ayrıca ücretsiz Kariyer Rehberi bölümümüzle CV yazımı ve iş arama konusunda pratik içerikler sunuyoruz.</p>
-    <p>İşletme bilgileri: ${PH('ŞİRKET / TİCARET UNVANI')} — ${PH('ADRES')}.</p>
+    <p>İşletme adı: CVUsta. İletişim: <b>cvusta.com@gmail.com</b></p>
   </div>`},
 
   iletisim:{ title:"İletişim", updated:"01.06.2026", body:`<div class="legal">
     <p>Her türlü soru, talep ve geri bildirim için bize ulaşabilirsiniz:</p>
     <ul>
-      <li><b>Ticaret Unvanı / Ad-Soyad:</b> ${PH('ŞİRKET / TİCARET UNVANI')}</li>
-      <li><b>Adres:</b> ${PH('AÇIK ADRES')}</li>
-      <li><b>E-posta:</b> ${PH('E-POSTA')}</li>
-      <li><b>Telefon:</b> ${PH('TELEFON')}</li>
-      <li><b>KEP Adresi:</b> ${PH('KEP ADRESİ')}</li>
-      <li><b>Vergi Dairesi / No:</b> ${PH('VERGİ DAİRESİ')} / ${PH('VERGİ NO')}</li>
+      <li><b>İşletme adı:</b> CVUsta</li>
+      <li><b>E-posta:</b> cvusta.com@gmail.com</li>
     </ul>
     <p>KVKK kapsamındaki başvurularınızı da yukarıdaki e-posta adresine iletebilirsiniz.</p>
   </div>`},
@@ -551,7 +547,7 @@ function legalPage(){ const L=LEGAL[S.legalKey]||LEGAL.gizlilik; return `<div>
     <h1 style="font-family:var(--serif);font-size:clamp(26px,5vw,36px);font-weight:600;margin:16px 0 6px;letter-spacing:-.5px">${L.title}</h1>
     <div style="font-size:12px;color:#a99a6e;margin-bottom:20px">Son güncelleme: ${L.updated}</div>
     <div style="font-size:14.5px;line-height:1.7;color:#33312b">${L.body}</div>
-    <div style="background:#fff6df;border:1px solid #ecd9a0;border-radius:10px;padding:14px 16px;margin-top:24px;font-size:12.5px;color:#8a6d1f">Not: Bu metin bir taslaktır. Köşeli parantezli alanları kendi işletme bilgilerinizle doldurun. Yayına almadan önce bir hukuk danışmanına gözden geçirtmeniz önerilir.</div>
+    <div style="background:#fff6df;border:1px solid #ecd9a0;border-radius:10px;padding:14px 16px;margin-top:24px;font-size:12.5px;color:#8a6d1f">Not: Bu metinler bilgilendirme amaçlıdır; yayına almadan önce bir hukuk danışmanına gözden geçirtmeniz önerilir.</div>
   </div>
   ${siteFooter()}
 </div>`; }
@@ -559,7 +555,7 @@ function legalPage(){ const L=LEGAL[S.legalKey]||LEGAL.gizlilik; return `<div>
 function topNav(){ return `<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 6vw;max-width:1300px;margin:0 auto;gap:12px">
   <div onclick="go('landing')" style="cursor:pointer">${LOGO()}</div>
   <div style="display:flex;align-items:center;gap:16px">
-    <span onclick="go('guide')" style="cursor:pointer;font-size:14px;font-weight:600;color:#5a5346">Kariyer Rehberi</span>
+    <a href="/rehber/" style="font-size:14px;font-weight:600;color:#5a5346;text-decoration:none">Kariyer Rehberi</a>
     <span onclick="go('auth')" style="cursor:pointer;font-size:14px;font-weight:600;color:#5a5346">Giriş</span>
     <button class="gold" onclick="newCV()">CV Oluştur →</button>
   </div></div>`; }
@@ -591,7 +587,7 @@ function article(){
     ${topNav()}
     <div style="padding:0 6vw">${adSlot(970,90,'Üst Banner 970×90')}</div>
     <div style="max-width:720px;margin:0 auto;padding:24px 6vw 40px">
-      <span onclick="go('guide')" style="cursor:pointer;font-size:13px;color:#8a6d1f;font-weight:600">← Tüm yazılar</span>
+      <a href="/rehber/" style="font-size:13px;color:#8a6d1f;font-weight:600;text-decoration:none">← Tüm yazılar</a>
       <div style="font-size:12px;color:#a99a6e;font-weight:600;margin:16px 0 8px">REHBER · ${a.read} okuma</div>
       <h1 style="font-family:var(--serif);font-size:clamp(26px,5vw,38px);font-weight:600;line-height:1.18;letter-spacing:-.5px;margin-bottom:14px">${a.title}</h1>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:22px;flex-wrap:wrap"><span style="font-size:12px;color:#998;font-weight:600">Paylaş:</span><button onclick="shareTo('x')" style="${SB}">𝕏</button><button onclick="shareTo('linkedin')" style="${SB}">in</button><button onclick="shareTo('whatsapp')" style="${SB}">WhatsApp</button><button onclick="copyLink()" style="${SB}">🔗 Kopyala</button></div>
@@ -691,7 +687,7 @@ function landing(){
       ${S.showAll?'':`<button class="ghost" style="margin-top:26px" onclick="toggleAll()">Tüm 50 şablonu gör ↓</button>`}
     </div></div>
     <div style="background:#fff;border-top:1px solid var(--line);padding:56px 6vw"><div style="max-width:1100px;margin:0 auto">
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:24px"><div><h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Kariyer Rehberi</h2><p style="color:#6b6354;margin-top:6px">CV ve iş arama üzerine ücretsiz, pratik içerikler.</p></div><button class="ghost" onclick="go('guide')">Tüm Yazılar →</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:24px"><div><h2 style="font-family:var(--serif);font-size:30px;font-weight:600">Kariyer Rehberi</h2><p style="color:#6b6354;margin-top:6px">CV ve iş arama üzerine ücretsiz, pratik içerikler.</p></div><a class="ghost" href="/rehber/" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center">Tüm Yazılar →</a></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px">${ARTICLES.slice(0,3).map(articleCard).join('')}</div>
     </div></div>
     <div id="fiyat" style="background:var(--ink);color:#fff;padding:56px 6vw"><div style="max-width:880px;margin:0 auto;text-align:center">
@@ -1014,7 +1010,15 @@ function render(top){
 }
 function rerender(){ const y=window.scrollY||window.pageYOffset||0; render(false); window.scrollTo(0,y); }
 
-render(true);
+(function(){
+  try{
+    var h=(location.hash||'').replace(/^#/,'');
+    var legal=['gizlilik','mesafeli','iade','hakkimizda','iletisim'];
+    if(h==='olustur'){ newCV(); return; }
+    if(legal.indexOf(h)>=0){ S.legalKey=h; S.view='legal'; render(true); return; }
+  }catch(e){}
+  render(true);
+})();
 </script>
 </body>
 </html>
